@@ -527,6 +527,44 @@ function install_authcode($string, $operation = 'DECODE', $key = '', $expiry = 0
 	
 }
 
+function we7_network_enable($host) {
+	if (empty($host)) {
+		trigger_error('function name we7_network_enable \'s param : $host is empty');
+		return false;
+	}
+	$httphost_is_ip = preg_match('/^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[1-9])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/', $host);
+	if ($httphost_is_ip) {
+		$if_local_network10 = preg_match('/^10\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/', $host);
+		if ($if_local_network10) {
+			return false;
+		}
+		$if_local_network172 = preg_match('/^172\.(1[6-9]|2[0-9]|3[0-1])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/', $host);
+		if ($if_local_network172) {
+			return false;
+		}
+		$if_local_network192 = preg_match('/^192\.168\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/', $host);
+		if ($if_local_network192) {
+			return false;
+		}
+	} else {
+		$dns_record = dns_get_record($host, DNS_A);
+		if (empty($dns_record) ||
+			empty($dns_record[0]['ip']) ||
+			$dns_record[0]['ip'] == '127.0.0.1' ||
+			strpos($dns_record[0]['ip'], '10.') === 0) {
+			return false;
+		}
+		$if_local_network172 = preg_match('/^172\.(1[6-9]|2[0-9]|3[0-1])\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/', $dns_record[0]['ip']);
+		if ($if_local_network172) {
+			return false;
+		}
+		$if_local_network192 = preg_match('/^192\.168\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/', $dns_record[0]['ip']);
+		if ($if_local_network192) {
+			return false;
+		}
+	}
+	return true;
+}
 
 function we7_need_extension() {
 	return array('zip', 'pdo', 'pdo_mysql', 'openssl', 'gd', 'mbstring', 'mcrypt', 'curl');
