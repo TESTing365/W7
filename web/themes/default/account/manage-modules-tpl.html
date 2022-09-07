@@ -1,0 +1,193 @@
+{template 'common/header'}
+{template 'account/account-header'}
+<div id="js-account-manage-modules-tpl" ng-controller="AccountMangeModulesTpl" ng-cloak>
+	{if $owner['is_admin']}
+		<div class="panel we7-panel user-permission">
+			<div class="panel-heading">
+				主管理员的会员权限
+			</div>
+			<div class="panel-body we7-padding">
+				全部
+			</div>
+		</div>
+	{/if}
+	{if !$owner['is_admin']}
+		<!--主管理员会员权限-->
+		<div class="panel we7-panel user-permission">
+			<div class="panel-heading">
+				<span>主管理员: {{owner.group.name}}</span>
+				
+				
+				{if $_W['role'] == ACCOUNT_MANAGE_NAME_FOUNDER}
+					<a href="{php echo url('user/edit/edit_modules_tpl',array('uid'=>$owner['uid']))}" class="pull-right color-default">修改</a>
+				{/if}
+				
+			</div>
+			<div class="we7-group-show we7-padding"  ng-repeat="module_tpl in modules_tpl">
+				<div class="name">
+					{{module_tpl.name}}
+				</div>
+				<div class="group-app-list" >
+					<div class="group-app-item" ng-repeat="module in module_tpl[account_type_sign]">
+						<img src="{{module.logo}}" class="module-img" alt="">
+						<div class="info">
+							<div class="title text-over">
+								{{module.title}}
+							</div>
+							<div class="type-list">
+								<i ng-class="we7TypeDefault[account_type_sign]['icon']"></i>
+							</div>
+						</div>
+					</div>
+					<div class="group-app-item" ng-repeat="module in module_tpl.templates" ng-if="account_type_sign == 'account'">
+						<img src="{{module.logo}}" class="template-img" alt="">
+						<div class="info">
+							<div class="title">
+								{{module.title}}
+							</div>
+							<div class="type-list">
+								<i class="wi wi-template"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a class="action" ></a>
+			</div>
+			<div class="we7-group-show we7-padding">
+				<div class="name">
+					附加应用
+				</div>
+				<div class="group-app-list" >
+					<div class="group-app-item" ng-repeat="module in user_extend_modules">
+						<img src="{{module.logo}}" class="module-img" alt="">
+						<div class="info">
+							<div class="title text-over">
+								{{module.title}}
+							</div>
+							<div class="type-list">
+								<i ng-class="we7TypeDefault[account_type_sign]['icon']"></i>
+							</div>
+						</div>
+					</div>
+					<div class="group-app-item" ng-repeat="module in module_tpl.templates" ng-if="account_type_sign == 'account'">
+						<img src="{{module.logo}}" class="template-img" alt="">
+						<div class="info">
+							<div class="title">
+								{{module.title}}
+							</div>
+							<div class="type-list">
+								<i class="wi wi-template"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a class="action" ></a>
+			</div>
+		</div>
+		
+		<!--附加会员权限-->
+		<div class="panel we7-panel user-permission">
+			<div class="panel-heading">
+				<span>附加应用权限组</span>
+				
+				
+				{if $_W['role'] == ACCOUNT_MANAGE_NAME_FOUNDER}
+				<we7-modal-app title="'修改附加应用权限组'" module-list="groupList" multiple="true" on-confirm="changeGroup()"><a href="javascript:;" class="pull-right color-default">修改</a></we7-modal-app>
+				{/if}
+				
+				
+			</div>
+			<div class="we7-group-show we7-padding"  ng-repeat="uni_group in extend.groups">
+				<div class="name">
+					{{uni_group.name}}
+				</div>
+				<div class="group-app-list" >
+					<div class="group-app-item" ng-repeat="module in uni_group[account_type_sign]" ng-if="module[account_type_sign + '_support'] == 2">
+						<img src="{{module.logo}}" class="module-img" alt="">
+						<div class="info">
+							<div class="title text-over">
+								{{module.title}}
+							</div>
+							<div class="type-list">
+								<i ng-class="we7TypeDefault[account_type_sign]['icon']"></i>
+							</div>
+						</div>
+					</div>
+					<div class="group-app-item" ng-repeat="module in uni_group.templates" ng-if="account_type_sign == 'account'">
+						<img src="{{module.logo}}" class="template-img" alt="">
+						<div class="info">
+							<div class="title">
+								{{module.title}}
+							</div>
+							<div class="type-list">
+								<i class="wi wi-template"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a class="action" ></a>
+			</div>
+			<div class="we7-empty-block" ng-if="extend.groups | we7IsEmpty">
+				暂无
+			</div>
+		</div>
+		<!-- 附加应用 -->
+		<div class="panel we7-panel user-permission">
+			<div class="panel-heading">
+				<span>附加应用</span>
+				
+				
+				{if $_W['role'] == ACCOUNT_MANAGE_NAME_FOUNDER}
+				<we7-modal-app module-list="moduleList" multiple="true" on-confirm="addExtend()"><a href="javascript:;" class="pull-right color-default">修改</a></we7-modal-app>
+				{/if}
+				
+			</div>
+			<div class="we7-group-show we7-padding">
+				<div class="name">
+					附加应用
+				</div>
+				<div class="group-app-list" >
+					<div class="group-app-item" ng-repeat="module in extend.modules" ng-if="module[account_type_sign + '_support'] == 2">
+						<img src="{{module.logo}}" class="module-img" alt="">
+						<div class="info">
+							<div class="title text-over">
+								{{module.title}}
+							</div>
+							<div class="type-list">
+								<i ng-class="we7TypeDefault[account_type_sign]['icon']"></i>
+							</div>
+						</div>
+					</div>
+					<div class="group-app-item" ng-repeat="module in extend.templates" ng-if="account_type_sign == 'account'">
+						<img src="{{module.logo}}" class="template-img" alt="">
+						<div class="info">
+							<div class="title">
+								{{module.title}}
+							</div>
+							<div class="type-list">
+								<i class="wi wi-template"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a class="action" ></a>
+			</div>
+		</div>
+	{/if}
+</div>
+<script>
+	angular.module('accountApp').value('config', {
+		owner: {php echo !empty($owner) ? json_encode($owner) : 'null'},
+		modules_tpl: {php echo !empty($modules_tpl) ? json_encode($modules_tpl) : 'null'},
+		user_extend_modules: {php echo !empty($user_extend_modules) ? json_encode($user_extend_modules) : 'null'},
+		extend: {php echo !empty($extend) ? json_encode($extend) : 'null'},
+		uni_groups: {php echo !empty($uni_groups) ? json_encode($uni_groups) : 'null'},
+		links: {
+			postModulesTpl: "{php echo url('account/post/edit_modules_tpl', array('uniacid' => $uniacid))}",
+		},
+		modules: {php echo !empty($modules) ? json_encode($modules) : 'null'},
+		account_type_sign: '{php echo $account->typeSign}',
+	});
+	angular.bootstrap($('#js-account-manage-modules-tpl'), ['accountApp']);
+</script>
+{template 'common/footer'}

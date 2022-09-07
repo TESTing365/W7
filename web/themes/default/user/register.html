@@ -1,0 +1,294 @@
+{template 'common/header-base'}
+<script>
+	$('#form1').submit(function(){
+		if ($.trim($(':text[name="username"]').val()) == '') {
+			util.message('没有输入用户名.', '', 'error');
+			return false;
+		}
+		if ($('#password').val() == '') {
+			util.message('没有输入密码.', '', 'error');
+			return false;
+		}
+		if ($('#password').val() != $('#repassword').val()) {
+			util.message('两次输入的密码不一致.', '', 'error');
+			return false;
+		}
+		/* 		{loop $extendfields $item}
+		{if $item['required']}
+		if (!$.trim($('[name="{$item['field']}"]').val())) {
+		util.message('{$item['title']}为必填项，请返回修改！', '', 'error');
+		return false;
+		}
+		{/if}
+		{/loop}
+		*/
+		{if $_W['setting']['register']['code']}
+		if ($.trim($(':text[name="code"]').val()) == '') {
+			util.message('没有输入验证码.', '', 'error');
+			return false;
+		}
+		{/if}
+		});
+	var h = document.documentElement.clientHeight;
+	$(".login").css('min-height',h);
+</script>
+<div class="user-login">
+	<div class="login-logo">
+		<div class="container">
+			<a href="{$_W['siteroot']}">
+				<img src="{if !empty($_W['setting']['copyright']['flogo'])}{php echo to_global_media($_W['setting']['copyright']['flogo'])}{else}./resource/images/logo/login-logo.png{/if}" class="logo">
+			</a>
+		</div>
+	</div>
+	<div class="login-header">
+		<div class="container">
+			<h3>账号注册</h3>
+			{if empty($_W['setting']['copyright']['console_status'])}
+			<div class="go">
+				已有账号，<a href="{url 'user/login'}" class="color-default">去登录</a>
+			</div>
+			{/if}
+		</div>
+	</div>
+	<div class="login-content">
+		<ul class="login-tab clearfix">
+			{if !empty($_W['setting']['register']['open'])}
+			<li  {if $_GPC['register_type'] == 'system' || empty($_GPC['register_type'])}class="active"{/if}>
+				<a href="{php echo url('user/register', array('register_type' => 'system', 'owner_uid' => $_GPC['owner_uid'], 'type' => $user_type, 'm' => $_GPC['m'], 'redirect' => $_GPC['redirect']))}">用户名密码</a>
+			</li>
+			{/if}
+			{if !empty($_W['setting']['copyright']['mobile_status'])}
+			<li {if $_GPC['register_type'] == 'mobile'}class="active"{/if}>
+				<a href="{php echo url('user/register', array('register_type' => 'mobile', 'owner_uid' => $_GPC['owner_uid'], 'type' => $user_type, 'm' => $_GPC['m'], 'redirect' => $_GPC['redirect']))}" >手机注册</a>
+			</li>
+			{/if}
+		</ul>
+		<div class="clearfix"></div>
+		<div class="login-form">
+			{if !empty($_W['setting']['register']['open'])}
+			{if $_GPC['register_type'] == 'system' || empty($_GPC['register_type'])}
+			<form action="" class="we7-form register-mobile" method="post" role="form" id="form1" ng-controller="UserRegisterSystem2" ng-cloak>
+				{if $user_type == USER_TYPE_CLERK}
+				<input type="hidden" name="type" value="{USER_TYPE_CLERK}"/>
+				{/if}
+				<div class="form-group required" ng-class="{true:'has-error has-feedback',false:'has-success has-feedback'}[usernameErr]">
+					<label class="control-label col-sm-1">用户名:</label>
+					<div class="col-sm-11">
+						<input name="username" type="text" class="form-control" placeholder="请输入{if $user_type == USER_TYPE_CLERK}应用操作员{/if}用户名" ng-model="username" ng-blur="checkUsername()" required>
+						<span ng-class="{true:'fa fa-times form-control-feedback reg-system-valid',false:'fa fa-check form-control-feedback reg-system-valid'}[usernameErr]" aria-hidden="true"></span>
+						<span ng-class="{true:'color-red',false:'sr-only'}[usernameErr]" class="help-block" ng-bind="usernameMsg"></span>
+					</div>
+				</div>
+
+				<div class="form-group required" ng-class="{true:'has-error has-feedback',false:'has-success has-feedback'}[passwordErr]">
+					<label class="control-label col-sm-1">密码:</label>
+					<div class="col-sm-11">
+						<input name="password" type="password" id="password" class="form-control col-sm-10" placeholder="请填写密码" ng-model="password" ng-blur="checkPassword()" required>
+						<span ng-class="{true:'fa fa-times form-control-feedback reg-system-valid',false:'fa fa-check form-control-feedback reg-system-valid'}[passwordErr]" aria-hidden="true"></span>
+						<span ng-class="{true:'color-red',false:'sr-only'}[passwordErr]" class="help-block" ng-bind="passwordMsg"></span>
+					</div>
+				</div>
+
+				<div class="form-group required" ng-class="{true:'has-error has-feedback',false:'has-success has-feedback'}[repasswordErr]">
+					<label class="control-label col-sm-1">确认密码:</label>
+					<div class="col-sm-11">
+						<input name="password " type="password" id="repassword" class="form-control col-sm-10" placeholder="重复输入密码，确认正确输入" ng-blur="checkRepassword()" ng-model="repassword" required>
+						<span ng-class="{true:'fa fa-times form-control-feedback reg-system-valid',false:'fa fa-check form-control-feedback reg-system-valid'}[repasswordErr]" aria-hidden="true"></span>
+						<span ng-class="{true:'color-red',false:'sr-only'}[repasswordErr]" class="help-block" ng-bind="repasswordMsg"></span>
+					</div>
+				</div>
+
+				{if $_W['setting']['register']['code']}
+				<div class="form-group required">
+					<label class="control-label col-sm-1">验证码:</label>
+					<div class="col-sm-11">
+						<div class="input-group">
+							<input name="code" type="text" class="form-control" placeholder="请输入验证码" ng-model="code">
+							<a href="javascript:;" class="input-group-btn imgverify" ng-click="changeVerify()"><img ng-src="{{image}}" style="height: 32px;"/></a>
+						</div>
+						<span ng-class="{true:'color-red',false:'sr-only'}[codeErr]" class="help-block" ng-bind="codeMsg"></span>
+					</div>
+				</div>
+				{/if}
+				{if !empty($setting['agreement_status']) && !empty($setting['agreement_status'])}
+				<div class="login-service">
+					<input type="checkbox" we7-check-all="1" id="server_system" class="" ng-model="agreement">
+					<label for="server_system">阅读并接受协议 <a href="{php echo url('user/agreement-show')}" class="color-default" target="_blank" >用户协议</a></label>
+				</div>
+				{/if}
+				<div class="login-submit text-center">
+					{if !empty($setting['agreement_status']) && !empty($setting['agreement_status'])}
+					<input type="submit" name="submit" value="注册" class="btn btn-block btn-primary" ng-disabled="usernameInvalid || passwordInvalid || repasswordInvalid || !agreement"/>
+					{else}
+					<input type="submit" name="submit" value="注册" class="btn btn-block btn-primary" ng-disabled="usernameInvalid || passwordInvalid || repasswordInvalid"/>
+					{/if}
+					<!-- <a href="{url 'user/login'}" class="btn btn-default">登录</a> -->
+					<input name="token" value="{$_W['token']}" type="hidden"/>
+					<input name="owner_uid" value="{$_GPC['owner_uid']}" type="hidden"/>
+					<input name="register_type" value="" type="hidden"/>
+					<input name="do" value="register" type="hidden"/>
+				</div>
+			</form>
+			{/if}
+			{/if}
+		</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	angular.module('userManageApp').value('config', {
+		'owner_uid': "{php echo !empty($owner_uid) ? $owner_uid : 0}",
+		'register_type': "{php echo !empty($register_type) ? $register_type : 0}",
+		'register_sign': "{php echo !empty($register_sign) ? $register_sign : 'null'}",
+		'image': "{php echo url('utility/code')}",
+		'password_safe': "{$setting['safe']}",
+		'links': {
+			'valid_mobile_link': "{php echo url('user/register/valid_mobile')}",
+			'send_code_link': "{php echo url('utility/verifycode/send_code')}",
+			'check_smscode_link': "{php echo url('utility/verifycode/check_smscode')}",
+			'img_verify_link': "{php echo url('utility/code')}",
+			'register_link': "{php echo url('user/register/register', array('type' => $user_type, 'm' => $_GPC['m'], 'redirect' => $_GPC['redirect']))}",
+			'check_username_link': "{php echo url('user/register/check_username')}",
+			'check_code_link': "{php echo url('user/register/check_code')}",
+			'check_password_link': "{php echo url('user/register/check_password_safe')}",
+		},
+	});
+	angular.module('userManageApp').controller('UserRegisterSystem2', ['$scope', '$http', 'config', function ($scope, $http, config) {
+		$scope.image = config.image;
+		console.log(config.image);
+		$scope.usernameInvalid = true;
+		$scope.passwordInvalid = true;
+		$scope.repasswordInvalid = true;
+		$scope.codeInvalid = true;
+
+		$scope.checkUsername = function() {
+			if ($scope.username == '' || $scope.username == undefined) {
+				$scope.usernameErr = true;
+				$scope.usernameMsg = '请输入用户名';
+			} else {
+				$http.post(config.links.check_username_link, {
+					username: $scope.username,
+					owner_uid: $scope.owner_uid,
+					password: $scope.password
+				}).success(function(data) {
+					if (data.message.errno != 0) {
+						$scope.usernameErr = true;
+						$scope.usernameMsg = '非常抱歉，此用户名已经被注册，你需要更换注册名称！';
+					} else {
+						$scope.usernameErr = false;
+						$scope.usernameInvalid = false;
+					}
+				});
+			}
+		}
+
+		$scope.checkPassword = function() {
+			if ($scope.password == '' || $scope.password == undefined) {
+				$scope.passwordErr = true;
+				$scope.passwordMsg = '请输入密码';
+			} else if ($scope.password.length < 8) {
+				$scope.passwordErr = true;
+				$scope.passwordMsg = '密码长度不能少于8';
+			} else {
+				if (config.password_safe == 1) {
+					var pass_reg = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,30}/;
+					if (!pass_reg.test( $scope.password)) {
+						$scope.passwordErr = true;
+						$scope.passwordMsg = '至少8-16个字符，必须包含大写字母，小写字母，数字。';
+					} else {
+						$scope.passwordErr = false;
+						$scope.passwordInvalid = false;
+					}
+				} else {
+					$scope.passwordErr = false;
+					$scope.passwordInvalid = false;
+				}
+			}
+		};
+
+		$scope.checkRepassword = function() {
+			if ($scope.repassword != $scope.password) {
+				$scope.repasswordErr = true;
+				$scope.repasswordMsg = '两次密码输入不一致';
+			} else {
+				$scope.repasswordErr = false;
+				$scope.repasswordInvalid = false;
+			}
+		};
+
+		$scope.changeVerify = function() {
+			$scope.image = config.links.img_verify_link + 'r=' + Math.round(new Date().getTime());
+			return false;
+		};
+
+		$scope.checkCode = function() {
+			if ($scope.code == '' || $scope.code == undefined) {
+				$scope.codeErr = true;
+				$scope.codeMsg = '请输入验证码';
+			} else {
+				$http.post(config.links.check_code_link, {code : $scope.code}).success(function(data) {
+					if (data.message.errno != 0) {
+						$scope.codeErr = true;
+						$scope.codeMsg = '请输入正确的验证码';
+						$scope.changeVerify();
+					} else {
+						$scope.codeErr = false;
+						$scope.codeInvalid = false;
+					}
+				});
+			}
+		};
+
+		$scope.checkExtendfield = function(field) {
+
+			var objInput = document.getElementsByName(field);
+			var valInput = objInput[0].value;
+
+			switch (field) {
+				case 'realname':
+					var reg = /^.{2,5}$/;
+					var fieldEmptyMsg = '请输入用户名';
+					var fieldRegMsg = '请输入您的真实姓名';
+					checkRes = checkField(valInput, field, fieldEmptyMsg, fieldRegMsg, reg);
+					break;
+				case 'nickname':
+					var reg = /^.{3,30}$/;
+					var fieldEmptyMsg = '请输入昵称';
+					var fieldRegMsg = '昵称格式为 3-30 位字符';
+					checkRes = checkField(valInput, field, fieldEmptyMsg, fieldRegMsg, reg);
+					break;
+				case 'qq':
+					if (valInput == '' || valInput == undefined) {
+						$scope.extendfields[field].fieldErr = true;
+						$scope.extendfields[field].fieldMsg = '请输入QQ';
+					} else {
+						var reg = /^[1-9][0-9]{4,9}$/;
+						var fieldEmptyMsg = '请输入QQ号码';
+						var fieldRegMsg = '请输入正确的QQ号码';
+						checkRes = checkField(valInput, field, fieldEmptyMsg, fieldRegMsg, reg);
+					}
+					break;
+			}
+		};
+
+		function checkField(valInput, field, fieldEmptyMsg, fieldRegMsg, reg) {
+			if (valInput == '' || valInput == undefined) {
+				$scope.extendfields[field].fieldErr = true;
+				$scope.extendfields[field].fieldMsg = fieldEmptyMsg;
+			} else {
+				if (!reg.test(valInput)) {
+					$scope.extendfields[field].fieldErr = true;
+					$scope.extendfields[field].fieldMsg = fieldRegMsg;
+				} else {
+					$scope.extendfields[field].fieldErr = false;
+				}
+			}
+			return $scope.extendfields[field].fieldErr;
+		};
+
+	}]);
+	angular.bootstrap($('.register-mobile'), ['userManageApp']);
+</script>
+
+{template 'common/footer-base'}

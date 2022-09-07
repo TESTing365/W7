@@ -1,0 +1,280 @@
+{template 'common/header'}
+<ul class="we7-page-tab">
+	{if !empty($active_sub_permission)}
+	{loop $active_sub_permission $active_menu}
+	{php $active_menu['is_display'] = isset($active_menu['is_display']) ? $active_menu['is_display'] : ''}
+	{if permission_check_account_user($active_menu['permission_name'], false) && $active_menu['is_display'] !== 0 && (empty($active_menu['is_display']) || is_array($active_menu['is_display']) && in_array($_W['account']['type'], $active_menu['is_display']))}
+	<li {if $type == $active_menu['active']}class="active"{/if}><a href="{$active_menu['url']}">{$active_menu['title']}</a></li>
+	{/if}
+	{/loop}
+	{/if}
+</ul>
+<div id="main" ng-controller="materialDisplay" ng-cloak>
+	<div class="material">
+		<div class="material-appmsg">
+			<div class="material-list-head clearfix">
+				<div class="search-box">
+					<form action="{php echo url('platform/draft/dispaly', array('type' => $type, 'server' => $server))}" class="search-form" method="post" >
+						<div class="input-group">
+							<input type="text" id="" name="title" class="form-control" size="40" value="{if !empty($_GPC['title'])}{$_GPC['title']}{/if}" placeholder="标题/作者/摘要">
+							<span class="input-group-btn">
+								<button class="btn btn-default"><i class="fa fa-search"></i></button>
+							</span>
+						</div>
+					</form>
+					{if $_W['account']['level'] > 2}
+					<a href="javascript:;" ng-click="sync('{php echo $type ? $type: 'draft'}')" class="btn btn-default">同步微信</a>
+					{/if}
+                    
+                    {if $type != 'news'}
+                    <li class="dropdown we7-margin-left dropdown-draft-type">
+                        <a id="dLabel1"  class="btn btn-primary " data-target="#"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            新的创作 <i class="wi wi-angle-down "></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dLabel1">
+                            <li>
+                                <a href="{php echo url('platform/draft/post')}">
+                                   <i class="wi wi-article"></i> 写新图文
+                                </a>
+                            </li>
+                            <li><a href="javascript:;" ng-click="selectNewsAdd()"><i class="wi wi-crontab"></i>选择已有图文</a></li>
+                        </ul>
+                    </li>
+                    {/if}
+				</div>
+			</div>
+            {if $type != 'news'}
+			<div class="btn-group-sub we7-margin-top" style="top:15px;">
+				<a href="{php echo url('platform/draft/display', array('type' => $type))}" class="btn {if $server != MATERIAL_WEXIN && $server != MATERIAL_LOCAL} active {/if}">全部</a>
+				<a href="{php echo url('platform/draft/display', array('type' => $type, 'server' => MATERIAL_WEXIN))}" class="btn {if $server == MATERIAL_WEXIN} active {/if}">微信</a>
+				<a href="{php echo url('platform/draft/display', array('type' => $type, 'server' => MATERIAL_LOCAL))}" class="btn {if $server == MATERIAL_LOCAL} active {/if}">服务器</a>
+			</div>
+            {/if}
+			<div class="material-appmsg-list">
+				{loop $material_list $material}
+				<div class="material-appmsg-item{if !empty($material['items']['1'])} multi{/if}">
+					<div class="appmsg-content">
+						<div class="appmsg-info">
+							<em class="appmsg-date">{php echo date('Y年m月d', $material['createtime'])}</em>
+							{if $material['model'] == 'local'}
+							<i class="wi wi-local pull-right color-default" style="font-size: 20px;"></i>
+							{else}
+								<i class="wi wi-wx-circle pull-right color-green" style="font-size: 20px;"></i>
+							{/if}
+							{if !empty($material['prompt_msg']) && $material['model'] != 'local'}
+							<div class="undone-tips">
+								图文内容不完整
+								<br> 请补全每一篇图文的封面图、标题和正文
+							</div>
+							{/if}
+						</div>
+						<div class="{if !empty($material['items']['1'])}cover-{/if}appmsg-item">
+							<h4 class="appmsg-title">
+								<a href="" target="blank">{$material['items']['0']['title']}</a>
+							</h4>
+							<div class="appmsg-thumb" style="background-image:url({$material['items']['0']['thumb_url']})">
+							</div>
+							<p class="appmsg-desc">{$material['items']['0']['digest']}</p>
+							{if $material['model'] == 'local'}
+								<a href="{if !empty($material['items']['0']['content_source_url']) && filter_var($material['items']['0']['content_source_url'], FILTER_VALIDATE_URL) !== false}{$material['items']['0']['content_source_url']}{else}{php echo url('platform/material/detail', array('newsid' => $material['id']))}{/if}" class="cover-dark">
+							{else}
+								<a href="javascript:;" data-toggle="modal" data-target="#modalWechatView" ng-click="choiceSendType('{$material['items']['0']['url']}', 'news', '{$material['media_id']}')" class="cover-dark">
+							{/if}
+								<div class="edit-mask-content">
+									{if $material['model'] == 'local'}
+										本地预览<span data-toggle="tooltip" data-placement="bottom" title="本地文章，不可以群发，可以转换成为微信文章."><i class="wi wi-explain-sign"></i></span>
+										<span class="hidden">外部链接预览<span data-toggle="tooltip" data-placement="bottom" title="外部链接，内容不是文章，不可以群发或转换为微信文章."><i class="wi wi-explain-sign"></i></span></span>
+									{else}
+										微信预览
+									{/if}
+								</div>
+								<span class="vm-box"></span>
+							</a>
+						</div>
+						{loop $material['items'] $key $material_row}
+						{if !empty($key)}
+						<div class="appmsg-item has-cover">
+							{if !empty($material_row['thumb_url'])}
+							<div class="appmsg-thumb" style="background-image:url('{php echo tomedia($material_row['thumb_url'])}">
+							</div>
+							{/if}
+							<h4 class="appmsg-title">
+								<a href="">{$material_row['title']}</a>
+							</h4>
+							{if !empty($material_row['thumb_url']) && !empty($material_row['url'])}
+							<a href="{$material_row['url']}" class="cover-dark">
+								<div class="edit-mask-content">
+									<p class="">
+										预览文章 </p>
+								</div>
+								<span class="vm-box"></span>
+							</a>
+							{/if}
+						</div>
+						{/if}
+						{/loop}
+					</div>
+					<div class="appmsg-opr">
+						<ul>
+                            {if $type == 'news'}
+                                <li class="appmsg-opr-item">
+                                    <a href="javascript:;" ng-click="archivedDraft({$material['id']})" class="" data-toggle="tooltip" data-placement="bottom" title="转换为草稿">&nbsp;<i class="wi wi-transform"></i></a>
+                                </li>
+                            {else}
+							{if !empty($material['items'][0]['content'])}
+								{if $material['model'] == 'perm'}
+									<li class="appmsg-opr-item dropdown">
+                                        <a id="dLabel"  data-target="#" href="http://example.com/" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                            <i class="wi wi-send"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                            <li><a href="javascript:;" ng-click="checkGroup('news', {$material['id']})">群发</a></li>
+                                            <li role="separator" class="divider"></li>
+                                            <li><a href="javascript:;" ng-click="checkGroup1({$material['id']})">发布</a></li>
+                                        </ul>
+									</li>
+								{else}
+									<li class="appmsg-opr-item">
+										<a href="javascript:;" ng-click="newsToWechat({$material['id']})" class="" data-toggle="tooltip" data-placement="bottom" title="转换为微信草稿"><i class="wi wi-transform"></i></a>
+									</li>
+								{/if}
+							{/if}
+							<li class="appmsg-opr-item">
+								<a href="{php echo url('platform/draft/post', array('id' => $material['id']))}" class="" data-toggle="tooltip" data-placement="bottom" title="编辑">&nbsp;<i class="wi wi-text"></i></a>
+							</li>
+                            {/if}
+							<li class="appmsg-opr-item">
+								<a class="" href="javascript:void(0);" ng-click="del_material('', '{$material['id']}', '{$material['model']}')" data-toggle="tooltip" data-placement="bottom" title="删除">&nbsp;<i class="wi wi-delete2"></i></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				{/loop}
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="check-group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title" id="myModalLabel">选择群发的粉丝组</h4>
+				</div>
+				<div class="modal-body">
+					<select class="form-control" ng-model="group">
+						<option value="">请选择粉丝组</option>
+						<option value="-1">全部粉丝</option>
+						<option ng-repeat="group in groups" value="{{ group.id }}">{{ group.name }}({{ group.count }})</option>
+					</select>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="sendMaterial()">发送</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Modal -->
+	<div class="modal fade" id="modalWechatView" tabindex="-1" role="dialog" aria-labelledby="modalWechatViewLabel">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title default-color" id="modalWechatViewLabel">微信预览</h4>
+				</div>
+				<div class="modal-body material-content clearfix web-mobile-choice-type">
+					<div class="material-wechat-view">
+						<a href="javascript:;" ng-click="wabPreview()" data-url="" class="we7-margin-bottom">
+							<span class="wi wi-account"></span>
+							<span>网页预览</span>
+						</a>
+						<a href="javascript:;" ng-click="mobilePreview()" data-type="" data-media-id="" class="we7-mobile-material-preview">
+							<span class="wi wi-iphone"></span>
+							<span>手机预览</span>
+						</a>
+					</div>
+					<div id="weixin-dialog" class="wechat-view-telephone hidden">
+						<div class="nav">
+							{if $type == 'news'}
+							<span class="wi wi-back-circle color-gray" ng-click="previewBack()"></span>
+							{/if}
+							<a class="color-gray">微信预览</a>
+							<span class="color-gray">/</span>
+							<a href="javscript:;" class="color-default">输入微信号</a>
+						</div>
+						<form action="" class="form-horizontal">
+							<div class="form-group we7-margin-top">
+								<div class="col-sm-12">
+									<div class="input-group">
+										<input type="text" id="wxname" name="wxname" class="form-control" placeholder="输入接收人的微信号预览"/>
+										<span class="input-group-btn">
+											<button class="btn btn-default btn-send">
+												发送
+											</button>
+										</span>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary btn-view" data-dismiss="modal" ng-click="previewBack()">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--end 素材:微信预览-->
+    <div class="modal fade " tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="modalPublish" id="modalPublish">
+        <div class="modal-dialog modal-tip">
+            <div class="modal-content">
+                <div class="modal-header clearfix">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                </div>		
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="text-info wi wi-info"></i>
+                        <p class="title">系统提示</p>
+                        <p class="content">
+                            你正在通过发布的方式发表内容。发布不占用群发次数，一天可多次发布。已发布内容不会推送给用户，也不会展示在公众号主页中。发布后，你可以前往发表记录获取链接，也可以将发布内容添加到自定义菜单、自动回复、话题和页面模板中。
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="draftPublish()">发布</button>
+                </div>	
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-right">
+	{$pager}
+</div>
+<script>
+	require(['jquery.wookmark'], function() {
+		//同步素材
+		angular.module('materialApp').value('config', {
+			'publish_url' : "{php echo url('platform/draft/publish')}",
+			'sync_url' : "{php echo url('platform/'. ($type == 'news' ? 'material' : 'draft').'/sync')}",
+			'postwechat_url' : "{php echo url('platform/'.($type == 'news' ? 'material' : 'draft').'/upload_news')}",
+			'send_url' : "{php echo url('platform/material/send')}",
+			'del_url' : "{php echo url('platform/'.($type == 'news' ? 'material' : 'draft').'/delete')}",
+			'post_url' : "{php echo url('platform/draft/post', (array('id' => '')))}",
+			'create_new_url' : "{php echo url('platform/material-post')}",
+			'trans_url' : "{php echo url('platform/material-post/upload_material')}",
+			'archived_draft_url': "{php echo url('platform/draft/archived_draft')}",
+			'group' : {php echo json_encode($group)},
+			'syncNews' : "{php echo empty($_GPC['sync_news']) ? '' : $_GPC['sync_news']}",
+			'typeName' : "{$_W['account']['type_name']}"
+		});
+		angular.bootstrap($('#main'), ['materialApp']);
+		$('.material-appmsg-list .material-appmsg-item').wookmark({
+			align: 'left',
+			autoResize: false,
+			container: $('.material-appmsg-list'),
+			itemWidth: 289,
+			offset: 30
+		});
+	});
+</script>
+{template 'common/footer'}

@@ -1,0 +1,55 @@
+{template 'common/header-base'}
+<div data-skin="default" class="skin-default {if $_GPC['main-lg']} main-lg-body {/if}">
+<div class="head">
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container {if !empty($frames['section']['platform_module_menu']['plugin_menu'])}plugin-head{/if}">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="{$_W['siteroot']}">
+					<img src="{if !empty($_W['setting']['copyright']['blogo'])}{php echo tomedia($_W['setting']['copyright']['blogo'])}{else}./resource/images/logo/logo.png{/if}" class="pull-left" width="110px" height="35px">
+					<span class="version hidden">{IMS_VERSION}</span>
+				</a>
+			</div>
+			{if !empty($_W['uid'])}
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav navbar-left">
+					<li class="active"><a href="cloud.php">系统更新</a></li>
+					<li><a href="{php echo url('home/welcome/system');}">系统管理</a></li>
+					<li><a href="{php echo url('home/welcome/system');}">返回应用</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class="wi wi-user color-gray"></i>{$_W['user']['username']} <span class="caret"></span></a>
+						<ul class="dropdown-menu color-gray" role="menu">
+							<li>
+								<a href="{url 'user/profile'}" target="_blank"><i class="wi wi-account color-gray"></i> 我的账号</a>
+							</li>
+							{if $_W['isfounder']}
+							<li class="divider"></li>
+							<li><a href="{url 'cloud/upgrade'}" target="_blank"><i class="wi wi-update color-gray"></i> 自动更新</a></li>
+							<li><a href="{url 'system/updatecache'}" target="_blank"><i class="wi wi-cache color-gray"></i> 更新缓存</a></li>
+							<li class="divider"></li>
+							{/if}
+							<li>
+								<a href="{url 'user/logout'}"><i class="fa fa-sign-out color-gray"></i> 退出系统</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			{else}
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown"><a href="{php echo url('user/register');}">注册</a></li>
+					<li class="dropdown"><a href="{php echo url('user/login');}">登录</a></li>
+				</ul>
+			</div>
+			{/if}
+		</div>
+	</nav>
+</div>
+<div class="main">
+{if !defined('IN_MESSAGE')}
+<div class="container">
+	<a href="javascript:;" class="js-big-main button-to-big color-gray" title="加宽">{if $_GPC['main-lg']}正常{else}宽屏{/if}</a>
+	
+{/if}

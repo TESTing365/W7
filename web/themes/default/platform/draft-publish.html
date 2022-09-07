@@ -1,0 +1,65 @@
+{template 'common/header'}
+<div class="we7-page-title">发表记录</div>
+<!-- <ul class="we7-page-tab">
+	{loop $active_sub_permission $active_menu}
+	{if permission_check_account_user($active_menu['permission_name'], false) && (empty($active_menu['is_display']) || is_array($active_menu['is_display']) && in_array($_W['account']['type'], $active_menu['is_display']))}
+	<li {if $do == $active_menu['active']}class="active"{/if}><a href="{$active_menu['url']}">{$active_menu['title']}</a></li>
+	{/if}
+	{/loop}
+</ul> -->
+<div class="draft-publish" id="js-draft-publish" ng-controller="draftPublish" ng-cloak>
+    <div class="alert alert-info we7-page-alert" >
+		<p><i class="wi wi-info-sign"></i>发表记录包括群发和发布。已群发内容会推送给用户。已发布内容不会推送，不占用群发次数，也不会展示在公众号主页中。</p>
+	</div>
+    <div class="search-box we7-margin-bottom">
+        <form action="{php echo url('platform/draft/publish_list')}" class="search-form" method="post" >
+            <div class="input-group">
+                <input type="text" id="" name="title" class="form-control" size="40" value="{if !empty($_GPC['title'])}{$_GPC['title']}{/if}" placeholder="标题/作者/摘要">
+                <span class="input-group-btn">
+                    <button class="btn btn-default"><i class="fa fa-search"></i></button>
+                </span>
+            </div>
+        </form>
+        <a href="javascript:;" ng-click="sync('publish')" class="btn btn-default">同步微信</a>
+    </div>
+	<table class="table we7-table table-hover vertical-middle">
+		<col />
+        <col />
+        <col width="200px" />
+		<tr>
+			<th>消息类型</th>
+			<th>发表时间</th>
+			<th>操作</th>
+		</tr>
+		{loop $material_list $list}
+        {loop $list['items'] $index $item}
+		<tr class="{php echo $index > 0 ? 'sub' : 'parent'} {php echo $item['is_deleted'] ? 'delete' : ''}">
+			<td>
+				<img src="{$item['thumb_url']}" width="45px" height="45px" alt="">
+                {$item['title']}
+			</td>
+			<td>{php echo date('Y-m-d H:i:s', $list['createtime'])}</td>
+			<td class="text-right">
+				{if !$item['is_deleted']}
+				<div class="link-group">
+				    <a href="javascript:;" ng-click="deleteItem({$list['id']}, {$index})" >删除</a>
+				    <a href="javascript:;" class="js-clip" data-url="{$item['url']}" >复制链接</a>
+                </div>
+				{/if}
+			</td>
+		</tr>
+        {/loop}
+		{/loop}
+	</table>
+	<div class="text-right">
+		{$pager}
+	</div>
+</div>
+<script>
+	angular.module('materialApp').value('config', {
+        'sync_url' : "{php echo url('platform/draft/sync')}",
+        'delete_url' : "{php echo url('platform/draft/publish_delete')}",
+	});
+	angular.bootstrap($('#js-draft-publish'), ['materialApp']);
+</script>
+{template 'common/footer'}

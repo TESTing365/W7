@@ -1,0 +1,189 @@
+{template 'common/header'}
+<div class="welcome-container"  id="js-home-welcome" ng-controller="WelcomeCtrl" ng-cloak>
+	{if permission_check_account_user('statistics_fans', false)}
+	<div class="panel we7-panel account-stat">
+		<div class="panel-heading">
+			<h4>今日/昨日</h4>
+		</div>
+		<div class="panel-body we7-padding-vertical">
+			<div class="col-sm-3 text-center">
+				<div class="title">新关注</div>
+				<div>
+					<span class="today" ng-init="0" ng-bind="fans_kpi.today.new"></span>
+					<span class="pipe">/</span>
+					<span class="yesterday" ng-init="0" ng-bind="fans_kpi.yesterday.new"></span>
+				</div>
+			</div>
+			<div class="col-sm-3 text-center">
+				<div class="title">取消关注</div>
+				<div>
+					<span class="today" ng-init="0" ng-bind="fans_kpi.today.cancel"></span>
+					<span class="pipe">/</span>
+					<span class="yesterday" ng-init="0" ng-bind="fans_kpi.yesterday.cancel"></span>
+				</div>
+			</div>
+			<div class="col-sm-3 text-center">
+				<div class="title">净增关注</div>
+				<div>
+					<span class="today" ng-init="0" ng-bind="fans_kpi.today.jing_num"></span>
+					<span class="pipe">/</span>
+					<span class="yesterday" ng-init="0" ng-bind="fans_kpi.yesterday.jing_num"></span>
+				</div>
+			</div>
+			<div class="col-sm-3 text-center">
+				<div class="title">累计关注</div>
+				<div>
+					<span class="today" ng-init="0" ng-bind="fans_kpi.all"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	{/if}
+
+	<!-- 公告 start -->
+	<div class="panel we7-panel">
+		<div class="panel-heading">
+			<h4>公告</h4>
+			<a href="./index.php?c=article&a=notice-show" class="color-default more">更多</a>
+		</div>
+		<div class="panel-body">
+			<div class="tab-content" >
+				<div class="tab-pane active" id="notice">
+					<ul class="list-group notice-statistics" >
+						<li class="list-group-item" ng-repeat="notice in notices" ng-if="notices">
+							<a ng-href="{{notice.url}}" class="text-over" ng-style="{'color': notice.style.color, 'font-weight': notice.style.bold ? 'bold' : 'normal'}" ng-bind="notice.title"></a>
+							<span class="pull-right color-gray" ng-bind="notice.createtime"></span>
+						</li>
+						<div class="we7-empty-block" ng-if="!notices.length"> 
+							暂无公告
+						</div>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 公告 end -->
+	
+	<div class="panel we7-panel">
+		<div class="panel-heading">
+			<h4>推荐应用</h4>
+			<ul class="nav nav-tabs" role="tablist">
+				<li role="presentation" :ng-class="{active: key == 'recommend'}" ng-click="changeTab(key)" ng-repeat="(key, item) in recommend"><a href="{{'#' + key}}" role="tab" aria-controls="{{key}}" data-type="{{key}}" data-toggle="tab" >{{item.name}}</a></li>
+			</ul>
+			<a href="javascript:openUrl('http://s.w7.cc')" class="more">去市场</a>
+		</div>
+		<div class="panel-body">
+			<div class="tab-content">
+				<div class="tab-pane " :ng-class="{active: key == 'recommend'}"  id="{{key}}" ng-repeat="(key, item) in recommend">
+					<div class="app-statistics">
+						<div class="left-box">
+							<div id="{{key + '-app-carousel'}}" class="carousel slide recommend-app-carousel" data-ride="carousel">
+								<ol class="carousel-indicators">
+									<li data-target="{{'#' + key + '-app-carousel'}}" data-slide-to="{{index}}"  ng-class="{active: index == 0}" ng-repeat="(index, ad) in item.ads"></li>
+								</ol>
+								<div class="carousel-inner" role="listbox">
+									<div class="item advertising-box" ng-class="{active: index == 0}" ng-repeat="(index, ad) in item.ads">
+										<a ng-href="javascript:openUrl('{{ad.url}}')">
+											<img ng-src="{{ad.cdn_logo}}" alt="">
+										</a>
+									</div>
+								</div>
+							</div>
+							<div class="go-store" ng-if="key != 'recommend' && item.ads.length == 0">
+								<div class="icon">
+									<img ng-src="{{'resource/images/welcome/' + item.icon + '-icon.png'}}" alt="">
+								</div>
+								<div class="name">
+									{{item.name}}
+								</div>
+								<div class="title">
+									网罗市场最新应用，更快了解最新应用
+								</div>
+								<a href="//s.w7.cc" class="btn btn-primary">去应用市场</a>
+							</div>
+						</div>
+						<div class="right-box" ng-if="key != 'new-app'">
+							<a href="javascript:;" ng-click="openAppUrl(app.aid)" class="app-item" ng-repeat="app in item.list">
+								<div class="app-item-box">
+									<div class="info">
+										<div class="logo">
+											<img ng-src="{{app.cdn_logo + '?imageView2/5/w/60/h/60/format/png'}}" alt="">
+										</div>
+										<div class=" text-over">
+											<div class="name text-over" ng-bind="app.title"></div>
+											<div class="time" ng-bind="'下载次数' + app.down_count"></div>
+										</div>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div class="right-box" ng-if="key == 'new-app'">
+							<div style="font-size: 13px;color: #979797;margin: 12px 0 -15px 13px;">公众号应用</div>
+							<span ng-repeat="(appkey, app) in item.list" ng-if="appkey < 3">
+								<a href="javascript:;" ng-click="openAppUrl(app.aid)" class="app-item" >
+									<div class="app-item-box">
+										<div class="info">
+											<div class="logo">
+												<img ng-src="{{app.cdn_logo + '?imageView2/5/w/60/h/60/format/png'}}" alt="">
+											</div>
+											<div class=" text-over">
+												<div class="name text-over" ng-bind="app.title"></div>
+												<div class="time" ng-bind="'更新时间' + app.last_upgrade_time"></div>
+											</div>
+										</div>
+									</div>
+								</a>
+							</span>
+							<div style="font-size: 13px;color: #979797;margin: 5px 0 -14px 13px;">小程序应用</div>
+							<span ng-repeat="(appkey, app) in item.list" ng-if="appkey > 2">
+								<a href="javascript:;" ng-click="openAppUrl(app.aid)" class="app-item" >
+									<div class="app-item-box">
+										<div class="info">
+											<div class="logo">
+												<img ng-src="{{app.cdn_logo + '?imageView2/5/w/60/h/60/format/png'}}" alt="">
+											</div>
+											<div class=" text-over">
+												<div class="name text-over" ng-bind="app.title"></div>
+												<div class="time" ng-bind="'更新时间' + app.last_upgrade_time"></div>
+											</div>
+										</div>
+									</div>
+								</a>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	require(['moment'], function() {
+		angular.module('homeApp').value('config', {
+			family: "{IMS_FAMILY}",
+			notices: {php echo !empty($notices) ? json_encode($notices) : 'null'},
+			apiLink: "{CLOUD_API_DOMAIN}",
+		});
+		angular.bootstrap($('#js-home-welcome'), ['homeApp']);
+	});
+	$(function(){
+		$('[data-toggle="tooltip"]').tooltip();
+		var $topic = $('.welcome-container .notice .menu .topic');
+		var $ul = $('.welcome-container .notice ul');
+
+		$topic.mouseover(function(){
+			var $this = $(this);
+			var $index = $this.index();
+			if ($this.is('.we7notice')) {
+				$this.parent().prev().hide();
+			} else {
+				$this.parent().prev().show();
+			}
+			$topic.removeClass('active');
+			$this.addClass('active');
+			$ul.removeClass('active');
+			$ul.eq($index).addClass('active');
+		})
+	})
+</script>
+{template 'common/footer'}

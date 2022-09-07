@@ -1,0 +1,242 @@
+{template 'common/header'}
+{if !empty($_GPC['step']) && $_GPC['step'] == 1 || empty($_GPC['step'])}
+	<div class="account-list-add" id="js-account-post-step1" ng-controller="AccountPostStepOne" ng-cloak>
+		{if $_W['iscontroller']}
+		<ol class="breadcrumb we7-breadcrumb">
+			<a href="{php echo url('account/manage/display')}"><i class="wi wi-back-circle"></i></a>
+			<li><a href="{php echo url('account/manage/display')}">平台列表</a></li>
+			<li>新建公众号</li>
+		</ol>
+		{/if}
+		<div class="panel we7-panel">
+			<div class="panel-body we7-padding">
+				<div class="col-lg-6 list-item">
+					<span class="img img-pen"></span>
+					<div class="info">
+						<div class="title">
+							<a href="javascript:;">手动添加公众号</a>
+						</div>
+						<div class="con">
+							通过<a href="https://mp.weixin.qq.com" target="_blank" class="color-default">微信公众平台</a> 基本配置获取AppID和AppSecret，添加成功后，将本平台获取的服务器配置接口绑定到微信公众平台（注：添加过程中，请务必保持参数一致）
+						</div>
+						<div class="action">
+							<a href="{php echo url('account/create', array('sign' => 'account'))}" class="btn btn-primary">手动添加公众号</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-6 list-item">
+					<span class="img img-tel"></span>
+					<div class="info">
+						<div class="title">
+							授权添加公众号
+						</div>
+						<div class="con">
+							{if $_W['isadmin']}
+							使用授权添加需认证微信开放平台和全网发布，并在<a href="{php echo url('system/platform', array('iscontroller' => 1))}" target="_blank" class="color-default">微信开放平台设置</a>中启用
+							{else}
+							使用公众平台绑定的管理员个人微信扫码即可快速添加
+							{/if}
+						</div>
+						<div class="action">
+							<a href="javascript:;" ng-click="checkAccountLimit()" class="btn btn-primary">授权添加公众号</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		angular.module('accountApp').value('config', {
+			links: {
+				checkAccountLimitUrl: "{php echo url('account/post-step/check_account_limit')}",
+			}
+		});
+		angular.bootstrap($('#js-account-post-step1'),['accountApp']);
+	</script>
+{elseif $_GPC['step'] == 4}
+	<div class="account-list-add-step">
+		{if $_W['iscontroller']}
+		<ol class="breadcrumb we7-breadcrumb">
+			<a href="{php echo url('account/manage/display', array('account_type' => ACCOUNT_TYPE_OFFCIAL_NORMAL))}"><i class="wi wi-back-circle"></i> </a>
+			<li><a href="{php echo url('account/manage/display', array('account_type' => ACCOUNT_TYPE_OFFCIAL_NORMAL))}">公众号列表</a></li>
+			<li>新建公众号</li>
+		</ol>
+		{/if}
+		<ul class="we7-step">
+			<li ><span class="content">1. 设置公众号信息</span></li>
+			{if !empty($_W['isfounder'])}
+			<li ><span class="content">2. 设置权限</span></li>
+			<li class="active"><span class="content">3. 设置微信公众平台,并检测</span></li>
+			{else}
+			<li class="active"><span class="content">2. 设置微信公众平台,并检测</span></li>
+			{/if}
+		</ul>
+		<div class="we7-form" id="js-account-post-step4" ng-controller="AccountPostStepFour" ng-cloak>
+			<!--第四步:引导页面-->
+			<div class="js-account-desc">
+				<div class="js-account-desc_content">
+					<div class="content-title">操作说明:</div>
+					<ul class="content-detail">
+						<li class="index">访问微信公众平台（https://mp.weixin.qq.com/），并登录公众号</li>
+						<li class="index">找到微信公众平台下的菜单【设置与开发 > 基本配置 >服务器配置】，在【服务器配置】下找到URL、Token、EncodingAESKey，并点击修改配置，如下图↓↓↓↓
+							<div class="img" style="margin-top: 10px;"><img ng-src="./resource/images/update-guide-01.png" class="idCardBack" width="1000" enlarge-pic></div>
+						</li>
+						<li class="index">将下列URL、Token、EncodingAESKey的值复制到对应的填写框里并启用服务器配置。
+							<div class="form-group" style="margin-top: 10px;">
+								<div class="form-group clip">
+									<label class="col-sm-1 control-label">URL:</label>
+									<div class="col-sm-11 input-group">
+										<p class="form-control-static">
+											<a href="javascript:;">{$_W['siteroot']}api.php?id={$account['acid']}</a>
+											<a href="javascript:;" id="copy-0" class="btn btn-primary" style="float: right;" clipboard supported="supported" text="url" on-copied="success('0')">复制</a>
+										</p>
+									</div>
+								</div>
+								<div class="form-group clip">
+									<label class="col-sm-1 control-label">Token:</label>
+									<div class="col-sm-11 input-group">
+										<p class="form-control-static">
+											<a href="javascript:;" ng-bind="account.token"></a>
+											<a href="javascript:;" id="copy-1" class="btn btn-primary" style="float: right;" clipboard supported="supported" text="account.token" on-copied="success('1')">复制</a>
+										</p>
+									</div>
+								</div>
+								<div class="form-group clip">
+									<label class="col-sm-1 control-label">EncodingAESKey:</label>
+									<div class="col-sm-10 input-group">
+										<p class="form-control-static">
+											<a href="javascript:;" title="点击复制EncodingAESKey" ng-bind="account.encodingaeskey"></a>
+											<a href="javascript:;" id="copy-2" class="btn btn-primary" style="float: right;" clipboard supported="supported" text="account.encodingaeskey" on-copied="success('2')">复制</a>
+										</p>
+									</div>
+								</div>
+								<div class="img"><img src="./resource/images/update-guide-02.png" width="400" enlarge-pic /></div>
+							</div>
+						</li>
+						<li class="index">在【设置与开发 > 公众号设置 > 功能设置】将当前站点域名填充至【业务域名】【JS接口安全域名】【网页授权域名】，前提是需下载MP_verify_CcR6Xmu00hRq4Afh文件并放入平台管理并上传JS接口文件，如下图↓↓↓↓↓
+							<div class="img" style="margin-top: 10px;"><img src="./resource/images/update-guide-03.png"  width="600" enlarge-pic></div>&nbsp;
+							<div class="img"><img src="./resource/images/update-guide-04.png"  width="500" enlarge-pic></div>&nbsp;
+							<div class="img"><img src="./resource/images/update-guide-05.png" width="414" enlarge-pic></div>
+						</li>
+						<li class="index">
+							<span class="color-green">配置完成!&nbsp;</span>检测是否接入成功
+							<br>
+							<span class="color-red" ng-if="account.isconnect == 1">公众号 <span ng-bind="account.name"></span> 接入成功</span>
+							<span class="color-red" ng-if="account.isconnect == 0">公众号 <span ng-bind="account.name"></span> 正在等待接入……请及时按照以上步骤操作接入公众平台</span>
+							<div class="form-group" style="margin-top: 30px;">
+								<a href="javascript:location.reload();" class="btn btn-success">检测是否接入成功</a>
+								<a ng-href="{{links.switch}}&uniacid={{account.uniacid}}" class="btn btn-primary">暂不接入，先去查看公众号功能</a>
+								<a ng-href="{{links.manage}}" class="btn btn-warning">返回平台列表</a>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<!--遮罩层-->
+			<div class="mask" close-pic>
+				<div class="mask-box"></div>
+				<div class="big-pic-wrap">
+					<img src="" alt="" class="bigPic" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		angular.module('accountApp').value('config', {
+			account: {php echo !empty($account) ? json_encode($account) : 'null'},
+			links: {
+				siteroot: "{$_W['siteroot']}",
+				post: "{php echo url('account/post')}",
+				manage: "{php echo $_W['siteroot'].'web/home.php'}",
+				wxapp_manage: "{php echo url('account/manage/display')}",
+				switch: "{php echo url('account/display/switch')}",
+			}
+		});
+		angular.module('accountApp').directive('enlargePic',function(){
+		 return{ 
+		  restrict: "AE", 
+		  link: function(scope,elem){ 
+		   elem.bind('click',function($event){ 
+			var img = $event.srcElement || $event.target; 
+			angular.element(document.querySelector(".mask"))[0].style.display = "block"; 
+			angular.element(document.querySelector(".bigPic"))[0].src = img.src; 
+		   }) 
+		  } 
+		 } 
+		}) 
+		.directive('closePic',function(){ 
+		 return{ 
+		  restrict: "AE", 
+		  link: function(scope,elem){ 
+		   elem.bind('click',function($event){ 
+			angular.element(document.querySelector(".mask"))[0].style.display = "none"; 
+		   }) 
+		  } 
+		 } 
+		});
+		angular.bootstrap($('#js-account-post-step4'),['accountApp']);
+	</script>
+	<style lang="scss">
+	.js-account-desc{
+		width: 100%;
+		height: auto;
+		display: inline-block;
+		background-color: #F0F3FA;
+		padding: 30px 15px;
+	}
+	.js-account-desc_content{
+		font-size: 14px;
+	}
+	.content-title{
+		margin-bottom: 10px;
+	}
+	.content-detail{
+		counter-reset: index;
+		padding: 5px 0px;
+		line-height: 20px;
+	}
+	.content-detail .index{
+		padding-left: 25px;
+		position: relative;
+		margin-bottom: 10px;
+	}
+	.content-detail .index:before{
+		content: counter(index);
+		counter-increment: index;
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		color: #fff;
+		font-size: 12px;
+		text-align: center;
+		line-height: 20px;
+		position: absolute;
+		left: 0;
+		top: 0;
+		border-radius: 50%;
+		background-color: #3296fa;
+	}
+	.mask{
+		display: none;
+		background: none;
+	}
+	.mask-box{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 99;
+		opacity: 0.5;
+		background-color: #000;
+	}
+	.big-pic-wrap{
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 100;
+	}
+</style>
+{/if}
+{template 'common/footer'}

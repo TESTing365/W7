@@ -1,0 +1,18 @@
+{template 'common/header'}
+<script type="text/javascript">
+	onload =function(){
+		var worker =new Worker('/web/resource/js/app/fibonacci.js');
+		worker.addEventListener('message', function(event) {
+			var timer2 = (new Date()).valueOf();
+			console.log( '结果：'+event.data, '时间:'+ timer2, '用时：'+ ( timer2  - timer ) );
+		}, false);
+		var timer = (new Date()).valueOf();
+		console.log('开始计算：40','时间:'+ timer );
+		setTimeout(function(){
+			console.log('定时器函数在计算数列时执行了', '时间:'+ (new Date()).valueOf() );
+		},1000);
+		worker.postMessage(40);
+		console.log('我在计算数列的时候执行了', '时间:'+ (new Date()).valueOf() );
+	}
+</script>
+{template 'common/footer'}

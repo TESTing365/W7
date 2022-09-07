@@ -1,0 +1,56 @@
+{template 'common/header-base'}
+<style>
+	html,body,.jump {
+		height: 100vh;
+		width: 100vw;
+		overflow: hidden;
+		background-color: #fff;
+	}
+	.jump {
+		position: relative;
+		text-align: center;
+	}
+	.center-box {
+		margin: 280px auto 0;
+		height: 230px;
+		width: 440px;
+		display: inline-block;
+		text-align: center;
+	}
+	.jump-content {
+		font-size: 18px;
+		line-height: 30px;
+		color: #666;
+		font-weight: 300;
+	}
+	.jump-tips {
+		font-size: 14px;
+		line-height: 30px;
+		color: #999999;
+	}
+</style>
+<div class="jump">
+	<div class="center-box">
+		<img src="https://cdn.w7.cc/ued/jump/image/jump-logo.png" alt="">
+		<div class="jump-content" style="margin-top: 20px">即将跳转至微信开放平台授权页面</div>
+		<div class="jump-content">点击下方授权登录按钮后，微信扫码授权即可完成绑定</div>
+		<div class="jump-tips" style="margin-bottom: 20px">3秒后自动跳转</div>
+		<a class="btn btn-primary" href="{$authurl}">微信授权登录</a>
+	</div>
+</div>
+
+<script>
+	window.onload = function() {
+        var tip = document.querySelector('.jump-tips')
+        var count = 3
+        var i = setInterval(function() {
+            count--
+            if(count > 0) {
+                tip.innerText = count + '秒后自动跳转'
+            }else {
+                clearInterval(i)
+                location.href = "{$authurl}"
+            }
+        },1000)
+    }
+</script>

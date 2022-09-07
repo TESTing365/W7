@@ -1,0 +1,42 @@
+{template 'common/header'}
+<div class="we7-page-title">首页</div>
+<div class="welcome-container" id="js-phoneapp-home-welcome" ng-controller="PhoneappWelcomeCtrl" ng-cloak>
+	<div class="panel we7-panel">
+		<div class="panel-heading">
+			公告
+			<a href="./index.php?c=article&a=notice-show" target="_blank" class="pull-right color-default">更多</a>
+		</div>
+		<ul class="list-group">
+			<li class="list-group-item" ng-repeat="notice in notices" ng-if="notices">
+				<a ng-href="{{notice.url}}" class="text-over" target="_blank" ng-bind="notice.title"></a>
+				<span class="time pull-right color-gray" ng-bind="notice.createtime"></span>
+			</li>
+			<li class="list-group-item text-center" ng-if="!notices">
+				<span>暂无数据</span>
+			</li>
+		</ul>
+	</div>
+	
+		<div class="panel we7-panel apply-list">
+			<div class="panel-heading">
+				<a href="http://s.we7.cc" target="_blank" class="pull-right color-default">查看更多应用</a>
+				微擎推荐
+			</div>
+			<div class="panel-body text-center" ng-class="{'we7-margin-vertical': !last_modules}">
+				<span href="javascript:;" ng-if="!last_modules && loaderror == 0">数据加载中...</span>
+				<span href="javascript:;" ng-if="!last_modules && loaderror == 1">数据加载失败，<a href="javascript:;" class="btn-link" ng-click="get_last_modules()">点击重试</a></span>
+				<a ng-href="{{module.url}}" target="_blank" ng-if="last_modules && module.wxapp && module.logo && $index+1 < 8" class="apply-item" ng-repeat="module in last_modules">
+					<img ng-src="{{module.logo}}">
+					<span class="text-over" ng-bind="module.title"></span>
+				</a>
+			</div>
+		</div>
+	
+</div>
+<script>
+	angular.module('phoneApp').value('config', {
+		notices: {php echo !empty($notices) ? json_encode($notices) : 'null'},
+	});
+	angular.bootstrap($('#js-phoneapp-home-welcome'), ['phoneApp']);
+</script>
+{template 'common/footer'}

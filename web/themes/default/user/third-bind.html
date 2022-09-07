@@ -1,0 +1,209 @@
+{template 'common/header-base'}
+<div class="head">
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="{$_W['siteroot']}">
+					<img src="{if !empty($_W['setting']['copyright']['flogo'])}{php echo to_global_media($_W['setting']['copyright']['flogo'])}{else}./resource/images/logo/login-logo.png{/if}" class="logo" style="max-height: 40px;max-width: 100px;">
+				</a>
+			</div>
+		</div>
+	</nav>
+</div>
+<div class="main bind-account third-bind" ng-controller="userBindCtrl2" ng-cloak>
+	<div class="register" >
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form action="javascript:;" class="we7-form">
+					{if $_W['setting']['copyright']['bind'] == 'qq'}
+					<div class="name">
+						绑定QQ
+						<!-- <small class="color-gray">(绑定后，可以用手机号登录系统)</small> -->
+					</div>
+					<div class="alert we7-page-alert"><i class="wi wi-info"></i>您还未绑定QQ，绑定后可直接用QQ登录</div>
+					<div class="bind-qq">
+						<div class="icon">
+							<i class="wi wi-qq"></i>
+						</div>
+						<div>请绑定QQ</div>
+						<div class="color-gray">
+							<small>绑定后，可以直接用QQ登录</small>
+						</div>
+					</div>
+					<div class="form-group bottom-action">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-10 ">
+							<a href="{$support_bind_urls['qq']}" class="btn btn-primary">点击去绑定</a>
+							<a href="./index.php?c=user&a=logout" class="btn btn-default">退出登录</a>
+						</div>
+					</div>
+					{/if}
+					{if $_W['setting']['copyright']['bind'] == 'wechat'}
+					<div class="name">
+						绑定微信
+						<!-- <small class="color-gray">(绑定后，可以用手机号登录系统)</small> -->
+					</div>
+					<div class="alert we7-page-alert"><i class="wi wi-info"></i>您还未绑定微信，绑定后可直接用微信登录</div>
+					<div class="bind-qq">
+						<div class="icon">
+							<i class="wi wi-account"></i>
+						</div>
+						<div>请绑定微信</div>
+						<div class="color-gray">
+							<small>绑定后，可以直接用微信登录</small>
+						</div>
+					</div>
+					<div class="form-group bottom-action">
+						<div class="col-sm-2"></div>
+						<div class="col-sm-10 ">
+							<a href="{$support_bind_urls['wechat']}" class="btn btn-primary">点击去绑定</a>
+							<a href="./index.php?c=user&a=logout" class="btn btn-default">退出登录</a>
+						</div>
+					</div>
+					{/if}
+				</form>
+			</div>
+		</div>
+	</div>
+	<!--图形验证吗-->
+	<div id="checkcaptcha" class="modal fade in" tabindex="-1" role="dialog" aria-hidden="true" >
+		<div class="modal-dialog modal-tip">
+			<div class="modal-content">
+				<div class="modal-header clearfix">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				</div>
+				<div class="modal-body">
+					<div class="text-center">
+						<div class="form-group input-group">
+							验证码：<input type="text" ng-model='imagecode' class="form-control" placeholder="输入图形验证码">
+							<a href="javascript:;" class="input-group-btn imgverify" style="" ng-click="changeVerify()"><img ng-src="{{image}}" style="width: 127px; height: 32px;"/></a>
+						</div>
+					</div>
+					<div class="clearfix"></div></div>
+				<div class="modal-footer">
+					<a href="javascript:;" ng-click="checkCaptcha(imagecode, bindmobile.third_nickname)" class="btn btn-primary">确定</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--/图形验证码-->
+</div>
+<script>
+	angular.module('userProfile').value('config',{
+		'image' : "{php echo url('utility/code')}",
+		'links':{
+			'img_verify_link': "{php echo url('utility/code')}",
+			'valid_mobile_link' : "{php echo url('user/third-bind/validate_mobile')}",
+			'bind_mobile_link' : "{php echo url('user/third-bind/bind_mobile')}",
+		},
+	});
+	angular.module('userProfile').controller('userBindCtrl2', ['$scope','$http', 'config','$interval', function($scope, $http, config, $interval){
+		$scope.bindqq = config.bindqq;
+		$scope.bindwechat = config.bindwechat;
+		$scope.login_urls = config.login_urls;
+		$scope.thirdlogin = config.thirdlogin;
+		$scope.image = config.image;
+		$scope.mobile = '';
+		$scope.password = '';
+		$scope.repassword = '';
+		$scope.links = config.links;
+		$scope.imagecode = '';
+		$scope.isDisable = false;
+
+		$scope.showCaptcha = function(type) {
+			if ($scope.mobile == '') {
+				util.message('手机号不能为空');
+				return false;
+			}
+			$http.post($scope.links.valid_mobile_link, {mobile : $scope.mobile, type : type}).success(function(data){
+				if (data.message.errno != 0) {
+					util.message(data.message.message);
+				} else {
+					$('#checkcaptcha').modal('show');
+				}
+			});
+		}
+
+		$scope.checkCaptcha = function(imagecode, type) {
+			if (imagecode == '') {
+				util.message('验证码不能为空');
+				return false;
+			}
+			$http.post($scope.links.checkcaptcha_link, {imagecode : imagecode}).success(function(data) {
+				if (data.message.errno == 0) {
+					$('#checkcaptcha').modal('hide');
+					$scope.sendMessage(type)
+				} else {
+					util.message(data.message.message);
+				}
+			})
+		}
+
+		$scope.changeVerify = function() {
+			$scope.image = $scope.links.img_verify_link + 'r=' + Math.round(new Date().getTime());
+			return false;
+		}
+
+		$scope.mobileBind = function(type, bind_type) {
+			if ($scope.mobile == '') {
+				util.message('手机号不能为空');
+				return false;
+			}
+			if ($scope.imagecode == '') {
+				util.message('图形验证码不能为空');
+				return false;
+			}
+			if ($scope.smscode == '') {
+				util.message('手机号验证码不能为空');
+				return false;
+			}
+
+			if ($scope.bindmobile == null) {
+				$http.post($scope.links.bind_mobile_link, {
+					mobile: $scope.mobile,
+					password: $scope.password,
+					repassword: $scope.repassword,
+					imagecode: $scope.imagecode,
+					smscode: $scope.smscode,
+					type: type,
+					need_checkcaptcha: 0
+				}).success(function (data) {
+					if (data.message.errno == 0) {
+						util.message(data.message.message, data.redirect, 'success');
+					} else {
+						util.message(data.message.message);
+					}
+				});
+			} else {
+				$http.post($scope.links.unbind_third_link, {
+					mobile: $scope.mobile,
+					password: $scope.password,
+					repassword: $scope.repassword,
+					imagecode: $scope.imagecode,
+					smscode: $scope.smscode,
+					type: type,
+					bind_type : bind_type,
+					need_checkcaptcha: 0
+				}).success(function (data) {
+					if (data.message.errno == 0) {
+						util.message(data.message.message, data.redirect, 'success');
+					} else {
+						util.message(data.message.message);
+					}
+				});
+			}
+		}
+
+		$scope.unbind = function(third_type) {
+			$http.post($scope.links.unbind_third_link, {bind_type: third_type}).success(function(data){
+				if (data.message.errno == 0) {
+					util.message(data.message.message, data.redirect, 'success');
+				} else {
+					util.message(data.message.message);
+				}
+			});
+		}
+	}]);
+	angular.bootstrap($('.bind-account'), ['userProfile']);
+</script>
+{template 'common/footer'}
