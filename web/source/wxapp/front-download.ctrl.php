@@ -319,15 +319,22 @@ if ('getpackage' == $do) {
 	);
 	if ($_W['account']['type_sign'] == 'wxapp') {
 		$module_root = IA_ROOT . '/addons/' . $module['name'] . '/';
-		$zip_name = $module['name'] . '_wxapp.zip';
-		if (file_exists($module_root . $zip_name)) {
-			$uniacid_zip_name = $module['name'] . '_wxapp_' . $_W['uniacid'] . '.zip';
+		$dir_name = $module['name'] . '_wxapp';
+		if (is_dir($module_root . $dir_name)) {
+			$uniacid_zip_name = $module['name'] . '_wxapp_' . $_W['uniacid'] . md5(complex_authkey()) . time() . '.zip';
+			$zip = new ZipArchive();
+			if ($zip->open($module_root . $uniacid_zip_name, ZipArchive::CREATE) === true) {//如果只用ZipArchive::OVERWRITE那么如果指定目标存在的话就会复写，否则返回错误9，而两个都用则会避免这个错误
+				addFileToZip($module_root . $dir_name, $zip, $module_root);
+				$zip->close();
+			}
 			if (!is_dir(ATTACHMENT_ROOT . '/siteinfo')) {
 				mkdir(ATTACHMENT_ROOT . '/siteinfo');
 			}
-			$copy_result = copy($module_root . $zip_name, ATTACHMENT_ROOT . '/siteinfo/' . $uniacid_zip_name);
+			$copy_result = copy($module_root . $uniacid_zip_name, ATTACHMENT_ROOT . '/siteinfo/' . $uniacid_zip_name);
 			if (!$copy_result) {
 				itoast('小程序前端报预处理打包失败，请将权限设置成755后再试！');
+			} else {
+				@unlink($module_root . $uniacid_zip_name);
 			}
 			$siteinfo_content = <<<EOF
 var siteinfo = {
@@ -343,12 +350,12 @@ module.exports = siteinfo;
 EOF;
 			$tmp_siteinfo_file = 'siteinfo/siteinfo_' . $_W['uniacid'] . '.js';
 			$siteinfo = file_write($tmp_siteinfo_file, $siteinfo_content);
-			$zip = new ZipArchive();
 			if ($zip->open(ATTACHMENT_ROOT . '/siteinfo/' . $uniacid_zip_name) === true) {
-				$a = $zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file, $module['name'] . '/siteinfo.js');
+				$a = $zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file, $dir_name . '/siteinfo.js');
 				$zip->close();
 				$result = array('url' => $_W['siteroot'] . 'attachment/siteinfo/' . $uniacid_zip_name);
 			}
+			@unlink(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file);
 		} else {
 			$result = error(-1, '没有检测到小程序前端包的存在，请联系网站管理员处理！');
 		}
@@ -362,4 +369,19 @@ EOF;
 		header("location: " . $result['url']);
 	}
 	exit;
+}
+
+function addFileToZip($path, $zip, $root_path) {
+	$handler = opendir($path);
+	while (($filename = readdir($handler)) !== false) {
+		if ($filename != "." && $filename != "..") {
+			if (is_dir($path . "/" . $filename)) {
+				addFileToZip($path . "/" . $filename, $zip, $root_path);
+			} else {
+				$zip->addFile($path . "/" . $filename, substr($path . "/" . $filename, strlen($root_path)));
+			}
+		}
+	}
+	@closedir($path);
+	return true;
 }

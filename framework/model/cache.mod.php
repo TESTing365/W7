@@ -593,6 +593,7 @@ function cache_updatecache() {
 	rmdirs(IA_ROOT . '/data/patch/upgrade/');
 	rmdirs(IA_ROOT . '/data/tpl/web/');
 	rmdirs(IA_ROOT . '/data/tpl/app/');
+	rmdirs(ATTACHMENT_ROOT . 'siteinfo/');
 	$path = IA_ROOT . '/data/';
 	if ($dir = opendir($path)) {
 		while (false !== ($file = readdir($dir))) {
