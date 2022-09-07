@@ -721,7 +721,7 @@ function we7_register_site() {
 		'version' => $version,
 		'release' => '',
 		'callback' => $callback,
-		'install_type' => 1,
+		'install_type' => 10,
 	);
 	$data = we7_request_api(API_OAUTH_REGISTER_SITE, $post);
 	if (!is_dir('data/logs')) {
