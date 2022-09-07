@@ -7,6 +7,9 @@
 * 应用安装需管理员手动将带有 [manifest.xml](https://wiki.w7.com/document/35/1525) 的应用包上传到addons目录下（无manifest.xml文件无法识别该应用）；
 * 小程序代码包内需包含文件名为```应用标识_wxapp.zip```的前端压缩包（如应用标识为```w7_wxappsample```，那么该应用代码包内需包含名为```w7_wxappsample_wxapp.zip```的前端压缩包），以供用户上传小程序时下载打包处理好的小程序前端包，用户上传小程序需自行使用 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/stable.html) 上传。
 
+### 环境要求
+Nginx + PHP>=5.6 + MySQL>=5.6
+
 ### 社区版安装
 1. 下载zip文件并解压
 2. 访问 ```https://域名/install.php ```进行安装
