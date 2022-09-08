@@ -502,6 +502,9 @@ if ('save_module_info' == $do) {
 	$module_update = array();
 	$title = safe_gpc_string($_GPC['moduleinfo']['title']);
 	if (!empty($title)) {
+		if (strlen($title) > 100) {
+			iajax(-1, '标题不可超过100个字符!');
+		}
 		$module_update['title'] = $title;
 		$module_update['title_initial'] = get_first_pinyin($title);
 	}

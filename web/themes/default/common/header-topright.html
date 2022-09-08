@@ -4,6 +4,13 @@
 <li ><a href="{$other['url']}"><i class="{$other['icon']}"></i><span>{$other['title']}</span></a></li>
 {/loop}
 {/if}
+{if $_W['iscontroller'] && $_W['isadmin']}
+<li><a href="{php echo $_W['siteroot'] . 'web/home.php'}" ><i class="wi wi-caozuotai"></i><span>客户端</span></a></li>
+{else}
+{if $_W['isadmin']}
+<li ><a href="{php echo url('account/manage/display', array('iscontroller' => 1))}"><i class="wi wi-kongzhitai"></i><span>控制台</span></a></li>
+{/if}
+{/if}
 {if !empty($nav_top_tiled_other)}
 {loop $nav_top_tiled_other $other}
 {if !$other['is_system']}{php continue;}{/if}
