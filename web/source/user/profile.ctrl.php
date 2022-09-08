@@ -359,7 +359,7 @@ if ('base' == $do) {
 
 	$extra_limit_table = table('users_extra_limit');
 	$extra_limit_info = $extra_limit_table->getExtraLimitByUid($_W['uid']);
-	$endtime = $user['endtime'];
+	$endtime = user_end_time($user['uid']);
 	$total_timelimit = $group_info['timelimit'] + $extra_limit_info['timelimit'];
 	if (0 == $endtime) {
 		$total_timelimit = '永久';

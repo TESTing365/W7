@@ -291,7 +291,6 @@ function user_single($user_or_uid) {
 	if (!empty($record['endtime']) && !in_array($record['endtime'], array(USER_ENDTIME_GROUP_EMPTY_TYPE, USER_ENDTIME_GROUP_UNLIMIT_TYPE)) && $record['endtime'] < TIMESTAMP) {
 		$record['is_expired'] = STATUS_ON;
 	}
-	$record['endtime'] = user_end_time($user['uid']);
 	return $record;
 }
 

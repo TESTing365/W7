@@ -1009,9 +1009,8 @@ function account_create($uniacid, $account) {
 	unset($account['type']);
 
 	$accountdata = array('uniacid' => $uniacid, 'type' => $type, 'hash' => random(8));
-	$user_create_account_info = permission_user_account_num();
 
-	if (!$_W['isadmin'] && $_W['user']['endtime'] > USER_ENDTIME_GROUP_UNLIMIT_TYPE) {
+	if (!$_W['isadmin']) {
 		$accountdata['endtime'] = $_W['user']['endtime'];
 	}
 	pdo_insert('account', $accountdata);
