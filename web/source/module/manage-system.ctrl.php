@@ -882,15 +882,6 @@ if ('installed' == $do) {
 			if ((empty($module['application_type']) || $module['application_type'] == APPLICATION_TYPE_MODULE) && !empty($_GPC['application_type']) && $_GPC['application_type'] == APPLICATION_TYPE_TEMPLATES) {
 				unset($module_list[$key]);
 			}
-			if (empty($_W['config']['setting']['local_dev'])) {
-				if ('local' == $module['from']) {
-					unset($module_list[$key]);
-				}
-			} else {
-				if ('local' != $module['from']) {
-					unset($module_list[$key]);
-				}
-			}
 			if ('all' != $module_support) {
 				$module['support_name'] = $module_all_support[$module_support_name]['type_name'];
 			}
@@ -902,10 +893,6 @@ if ('installed' == $do) {
 	}
 	$pager = pagination(count($module_list), 1, 15, '', array('ajaxcallback' => true, 'callbackfuncname' => 'loadMore'));
 	$module_uninstall_total = module_uninstall_total($module_support);
-//    echo "<pre>";
-//    print_r($module_list);
-//    echo "</pre>";
-//    exit;
 }
 
 if ('not_installed' == $do) {
