@@ -348,17 +348,11 @@ if ('base' == $do) {
 
 	$extra_limit_table = table('users_extra_limit');
 	$extra_limit_info = $extra_limit_table->getExtraLimitByUid($_W['uid']);
-
 	$endtime = $user['endtime'];
 	$total_timelimit = $group_info['timelimit'] + $extra_limit_info['timelimit'];
-
-	if (USER_ENDTIME_GROUP_EMPTY_TYPE == $endtime || USER_ENDTIME_GROUP_UNLIMIT_TYPE == $endtime) {
+	if (0 == $endtime) {
 		$total_timelimit = '永久';
 		$endtime = '永久';
-	} elseif (USER_ENDTIME_GROUP_DELETE_TYPE == $endtime && 0 == $total_timelimit) {
-		$endtime = 0 == $total_timelimit ? date('Y-m-d', $user['joindate']) : date('Y-m-d', $user['endtime']);
-	} else {
-		$endtime = date('Y-m-d', $endtime);
 	}
 
 	$setting_sms_sign = setting_load('site_sms_sign');
