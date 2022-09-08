@@ -4,7 +4,7 @@
  * [WeEngine System] Copyright (c) 2014 W7.CC.
  */
 define('IN_SYS', true);
-require __DIR__ . './framework/bootstrap.inc.php';
+require __DIR__ . '/framework/bootstrap.inc.php';
 
 $result = cache_updatecache();
 if ($result) {
