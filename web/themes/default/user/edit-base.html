@@ -17,7 +17,7 @@
 		<tr>
 			<td class="table-label">用户名</td>
 			<td ng-bind="user.username"></td>
-			<td></td>
+			<td><div class="link-group"><a href="javascript:;" data-toggle="modal" data-target="#name" ng-click="editInfo('username', user.username)">修改</a></div></td>
 		</tr>
 		<tr>
 			<td class="table-label">密码</td>

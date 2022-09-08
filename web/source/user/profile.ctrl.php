@@ -99,6 +99,17 @@ if ('post' == $do) {
 				}
 			}
 			break;
+		case 'username':
+			if (!$_W['isadmin'] && $_W['uid'] != $user['owner_uid']) {
+				iajax(-1, '无权限修改，请联系网站创始人！');
+			}
+			$username = safe_gpc_string($_GPC['username']);
+			$name_exist = pdo_get('users', array('username' => $username));
+			if (!empty($name_exist)) {
+				iajax(-1, '用户名已存在，请更换其他用户名！', '');
+			}
+			$result = pdo_update('users', array('username' => $username), array('uid' => $uid));
+			break;
 		case 'vice_founder_name':
 			$userinfo = user_single(array('username' => safe_gpc_string($_GPC['vice_founder_name'])));
 
