@@ -37,7 +37,7 @@ if (is_array($session)) {
 	unset($user);
 }
 unset($session);
-if (IMS_FAMILY == 'c' && ((!empty($_SERVER['HTTP_ORIGIN']) && strpos($_SERVER['HTTP_ORIGIN'], 'console.w7.cc')) || (!empty($_SERVER['HTTP_ORIGIN']) && !empty($_SERVER['HTTP_SEC_FETCH_DEST']) && 'iframe' == $_SERVER['HTTP_SEC_FETCH_DEST'])) && $controller != 'cloud' && $action != 'touch') {
+if (IMS_FAMILY == 'c' && ((!empty($_SERVER['HTTP_ORIGIN']) && strpos($_SERVER['HTTP_ORIGIN'], 'console.w7.cc'))) && $controller != 'cloud' && $action != 'touch') {
 	if ($_W['isajax']) {
 		iajax(-1, '社区版不支持控制台');
 	} else {
