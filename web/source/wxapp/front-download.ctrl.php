@@ -9,7 +9,7 @@ load()->model('miniapp');
 load()->classs('uploadedfile');
 load()->func('file');
 
-$dos = array('front_download', 'domainset', 'qrcode', 'qrscan', 'publish', 'getpackage', 'entrychoose', 'set_wxapp_entry', 'platform_version_manage',
+$dos = array('front_download', 'domainset', 'getpackage', 'entrychoose', 'set_wxapp_entry', 'platform_version_manage',
 	'custom', 'custom_save', 'custom_default', 'custom_convert_img', 'upgrade_module', 'tominiprogram');
 $do = in_array($do, $dos) ? $do : 'front_download';
 
@@ -164,110 +164,6 @@ if ('upgrade_module' == $do) {
 	iajax(0, '更新模块信息成功');
 }
 
-// 获取用户授权二维码和uuid
-if ('qrcode' == $do) {
-	$data = cloud_wxapp_login_qrcode();
-	if (is_error($data)) {
-		iajax(-1, '系统错误');
-	}
-	iajax(0, $data);
-}
-// 获取ticket
-if ('qrscan' == $do) {
-	$uuid = safe_gpc_string($_GPC['uuid']);
-	if (empty($uuid)) {
-		iajax(-1, '参数错误');
-	}
-	$params = array(
-		'uuid' => $uuid
-	);
-	$data = cloud_wxapp_login_qrscan($params);
-	if (is_error($data)) {
-		iajax(-1, '系统错误');
-	}
-	iajax(0, $data);
-}
-// 上传小程序
-if ('publish' == $do) {
-	if (empty($_GPC['version_id']) || empty($_GPC['ticket']) || empty($_GPC['user_version']) || empty($_GPC['user_desc'])) {
-		iajax(-1, '参数错误');
-	}
-	$version_id = intval($_GPC['version_id']);
-	$version_info = miniapp_version($version_id);
-	$account_wxapp_info = miniapp_fetch($version_info['uniacid'], $version_id);
-
-	if ($version_info['type'] == 0) {
-		$module = array_shift($account_wxapp_info['version']['modules']);
-	}
-	if (empty($account_wxapp_info)) {
-		iajax(-1, '版本不存在');
-	}
-	$siteurl = $_W['siteroot'] . 'app/index.php';
-	if (!empty($account_wxapp_info['appdomain'])) {
-		$siteurl = $account_wxapp_info['appdomain'];
-	}
-	if (!starts_with($siteurl, 'https')) {
-		iajax(-1, '小程序域名必须为https');
-	}
-	if ($version_info['type'] == WXAPP_CREATE_MODULE && $version_info['entry_id'] <= 0) {
-		iajax(-1, '请先设置小程序入口');
-	}
-	if (ACCOUNT_TYPE_APP_AUTH == $_W['account']['type']) {
-		if (empty($_W['setting']['platform']['authstate'])) {
-			iajax(-1, '开放平台未开启，无法上传');
-		}
-		if (empty($_W['setting']['platform']['bindappid'])) {
-			iajax(-1, '未设置开放平台绑定的开发小程序，无法给该授权小程序上传，请先<a href="./index.php?c=system&a=platform" class="color-default">绑定开发小程序</a>');
-		}
-		$appid = $_W['setting']['platform']['bindappid'];
-	} else {
-		$appid = $account_wxapp_info['key'];
-	}
-	if ($version_info['use_default'] == 0) {
-		$appjson = miniapp_code_custom_appjson_tobase64($version_id);
-		if ($appjson) {
-			if (!isset($appjson['tabBar']['list'])) {
-				unset($appjson['tabBar']);
-			}
-		}
-	}
-	$siteinfo = array(
-		'siteinfo' => array(
-			'name' => $account_wxapp_info['name'],
-			'uniacid' => $account_wxapp_info['uniacid'],
-			'acid' => $account_wxapp_info['acid'],
-			'multiid' => $account_wxapp_info['version']['multiid'],
-			'version' => safe_gpc_string($_GPC['user_version']),
-			'siteroot' => $siteurl,
-		)
-	);
-	$appjson = !empty($appjson) ? array_merge($siteinfo, $appjson) : $siteinfo;
-	$params = array(
-		'preview' => isset($_GPC['commit_type']) ? safe_gpc_string($_GPC['commit_type']) : 1,
-		'ticket' => safe_gpc_string($_GPC['ticket']),
-		'module' => empty($module) ? array() : $module,
-		'publish' => array(
-			'version' => safe_gpc_string($_GPC['user_version']),
-			'description' => safe_gpc_html($_GPC['user_desc'])
-		),
-		'invalid_plugins' => !empty($_GPC['support_live']) ? explode(',', safe_gpc_string($_GPC['support_live'])) : array(),
-		'appid' => $appid,
-		'wxapp_type' => isset($version_info['type']) ? intval($version_info['type']) : 0,
-		'appjson' => json_encode($appjson),
-		'tominiprogram' => array_keys($version_info['tominiprogram'])
-	);
-
-	$data = cloud_wxapp_publish($params);
-	if (is_error($data)) {
-		if (ACCOUNT_TYPE_APP_AUTH == $_W['account']['type']) {
-			iajax(-1, $_W['account']->errorCode($data['errno']));
-		} else {
-			iajax(-1, $data['message']);
-		}
-	}
-	iajax(0, $data);
-}
-
 if ('tominiprogram' == $do) {
 	$tomini_lists = iunserializer($version_info['tominiprogram']);
 	if (!is_array($tomini_lists)) {
@@ -321,7 +217,12 @@ if ('getpackage' == $do) {
 		$module_root = IA_ROOT . '/addons/' . $module['name'] . '/';
 		$dir_name = $module['name'] . '_wxapp';
 		if (is_dir($module_root . $dir_name)) {
-			$uniacid_zip_name = $module['name'] . '_wxapp_' . $_W['uniacid'] . md5(complex_authkey()) . time() . '.zip';
+			$tomini_lists = iunserializer($version_info['tominiprogram']);
+			if (!empty($tomini_lists) && file_exists($module_root . $dir_name . '/app.json')) {
+				$app_json = json_decode(file_get_contents($module_root . $dir_name . '/app.json'), true);
+				$app_json['embeddedAppIdList'] = array_keys($version_info['tominiprogram']);
+			}
+			$uniacid_zip_name = $module['name'] . '_wxapp_' . $_W['uniacid'] . md5(time()) . '.zip';
 			$zip = new ZipArchive();
 			if ($zip->open($module_root . $uniacid_zip_name, ZipArchive::CREATE) === true) {//如果只用ZipArchive::OVERWRITE那么如果指定目标存在的话就会复写，否则返回错误9，而两个都用则会避免这个错误
 				addFileToZip($module_root . $dir_name, $zip, $module_root);
@@ -349,13 +250,19 @@ var siteinfo = {
 module.exports = siteinfo;
 EOF;
 			$tmp_siteinfo_file = 'siteinfo/siteinfo_' . $_W['uniacid'] . '.js';
-			$siteinfo = file_write($tmp_siteinfo_file, $siteinfo_content);
+			file_write($tmp_siteinfo_file, $siteinfo_content);
+			if (!empty($app_json)) {
+				$tmp_app_json_file = 'siteinfo/app_' . $_W['uniacid'] . '.json';
+				file_write($tmp_app_json_file, json_encode($app_json));
+			}
 			if ($zip->open(ATTACHMENT_ROOT . '/siteinfo/' . $uniacid_zip_name) === true) {
-				$a = $zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file, $dir_name . '/siteinfo.js');
+				$zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file, $dir_name . '/siteinfo.js');
+				$zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_app_json_file, $dir_name . '/app.json');
 				$zip->close();
 				$result = array('url' => $_W['siteroot'] . 'attachment/siteinfo/' . $uniacid_zip_name);
 			}
 			@unlink(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file);
+			@unlink(ATTACHMENT_ROOT . '/' . $tmp_app_json_file);
 		} else {
 			$result = error(-1, '没有检测到小程序前端包的存在，请联系网站管理员处理！');
 		}
