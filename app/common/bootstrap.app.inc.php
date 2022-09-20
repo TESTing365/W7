@@ -150,7 +150,7 @@ if (!empty($_W['account']['oauth']) && $_W['account']['oauth']['support_oauthinf
 		$callback = urlencode($url);
 		$oauth_account = WeAccount::create($_W['account']['oauth']);
 		$forward = $oauth_account->getOauthUserInfoUrl($callback, $state);
-		header('Location: ' . $forward);
+		template('auth/wx');
 		exit();
 	}
 }
