@@ -57,16 +57,13 @@ function setting_load($key = '') {
 	}
 }
 
-function setting_upgrade_version($family, $version, $release) {
-	if (version_compare(IMS_FAMILY, $version, '>=')) {
+function setting_upgrade_version($version) {
+	if (version_compare(IMS_VERSION, $version, '>=')) {
 		return true;
 	}
-	$vaild_family = array('s', 'v', 'x', 'l');
-	$family = in_array($family, $vaild_family) ? $family : 'v';
 	$settings = [
 		'version' => $version,
-		'family' => $family,
-		'release_date' => $release,
+		'family' => 'c',
 	];
 	return (bool)setting_save($settings, 'local_version_info');
 }

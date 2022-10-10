@@ -247,6 +247,17 @@ $w7_system_menu['site'] = array(
 	'dimension' => 3,
 	'url' => url('system/site'),
 	'section' => array(
+        'upgrade' => array(
+            'title' => '升级服务',
+            'menu' => array(
+                'system_upgrade' => array(
+                    'title' => '系统升级',
+                    'url' => url('cloud/upgrade'),
+                    'icon' => 'wi wi-cache',
+                    'permission_name' => 'system_cloud_upgrade',
+                ),
+            ),
+        ),
 		'setting' => array(
 			'title' => '设置',
 			'menu' => array(

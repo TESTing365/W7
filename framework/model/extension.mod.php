@@ -713,7 +713,7 @@ function ext_manifest_check($module_name, $manifest) {
 	//模块权限检测
 	if (isset($manifest['permissions']) && is_array($manifest['permissions']) && !empty($manifest['permissions'])) {
 		foreach ($manifest['permissions'] as $permission) {
-			if (trim($permission['title']) == '' || !preg_match('/^[a-z\d_]+$/i', $permission['do'])) {
+			if (trim($permission['title']) == '' || !preg_match('/^[a-z\d_]+$/i', $permission['permission'])) {
 				$error_msg .= '<br/>' . "&lt;permissions&gt;节点名称为： {$permission['title']} 的权限标识格式不正确,请检查标识名称或标识格式是否正确";
 			}
 		}

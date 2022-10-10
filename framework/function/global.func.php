@@ -1582,5 +1582,23 @@ function iconsole_log($data) {
 	echo '</script>';
 }
 
+/**
+ * 判断给定字符串是否是三段版本号
+ * @param $string
+ * @return bool
+ */
+function str_is_version($string) {
+	$string_array = explode('.', $string);
+	$sum = 0;
+	foreach ($string_array as $item) {
+		if (!is_numeric($item)) {
+			continue;
+		}
+		$sum++;
+	}
+	if ($sum != 3) {
+		return false;
+	}
+	return true;
+}
 load()->func('safe');
-load()->func('system');

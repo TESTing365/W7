@@ -1,0 +1,102 @@
+{template 'common/header'}
+<div class="upgrade-content" id="js-cloud-upgrade" ng-controller="CloudUpgradeCtrl" ng-cloak>
+	<div class="alert we7-page-alert">
+		<p><i class="wi wi-info-sign"></i>系统更新后，如果出现样式错误等，请自行更新缓存并“CTRL+F5”强行刷新</p>
+	</div>
+	<div class="upgrade-heading">
+		<img src="./resource/images/logo/logo-lg.png" alt="" class="we7-logo"/>
+		<h2 class="upgrade-version">系统当前版本: {IMS_FAMILY}{IMS_VERSION}</h2>
+	</div>
+	<div ng-if="upgrade && upgrade.length">
+		<div class="upgrade-info">
+			<div class="item">
+				<div class="title">需要更新脚本</div>
+				<div class="count"><span>{{upgrade.length > 0 ? upgrade.length + '项' : '暂无更新脚本'}}</span> </div>
+				<a href="#upgrade-scripts" data-toggle="modal" >查看</a>
+			</div>
+		</div>
+		<div class="text-center we7-margin-top">
+			<input type="button" name="" id="forward" value="一键更新" class="btn btn-primary we7-margin-right" ng-show="upgrade.length" ng-click="submit()"/>
+		</div>
+	</div>
+	<div ng-if="!upgrade.length">
+		<div class="upgrade-new">
+			当前版本为最新版本，您可以点击此按钮, 立即检查是否有升级脚本。
+		</div>
+		<div class="text-center">
+			<button class="btn btn-primary we7-margin-right" ng-disabled="submitDisabled" ng-click="checkUpgrade()">{{showtext}}</button>
+		</div>
+	</div>
+
+	<div class="upgrade-wechat">
+		<img src="//cdn.w7.cc/images/2018/12/27/KoQkSCmzxpGjDtRDWgov4gG8STCaG7MaBtdPKIgL.jpeg?imageView2/5/w/105/format/png" alt="">
+		<div class="info">
+			<p class="title">官方公告请关注"<span class="color-default">微擎团队订阅号</span>"查看</p>
+			<p class="">赶快扫码关注吧</p>
+		</div>
+	</div>
+	<div class="modal fade" id="upgrade-scripts" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog we7-modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title">更新脚本</h4>
+				</div>
+				<div class="modal-body color-dark">
+					<div class="upgrade-modal-box" ng-if="upgrade && upgrade.length">
+						<p ng-repeat="scripts in upgrade" >
+							<span style="display:inline-block; width:100px;" ng-bind="scripts.version"></span>{{scripts.description}}
+						</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	angular.module('cloudUpgradeApp', []);
+	angular.module('cloudUpgradeApp').value('config', {
+		'links': {
+			'process': "{php echo url('cloud/process')}",
+			'getUpgradeInfo': "{php echo url('cloud/upgrade/get_upgrade_info')}",
+		}
+	});
+	angular.module('cloudUpgradeApp').controller('CloudUpgradeCtrl', ['$scope', '$http', 'config', function($scope, $http, config) {
+		$scope.upgrade = {};
+		$scope.showtext = '立即检查';
+		$scope.submitDisabled = false;
+		$scope.checkUpgrade = function() {
+			$scope.showtext = '正在检查...';
+			$scope.submitDisabled = true;
+			$http.post(config.links.getUpgradeInfo)
+					.success(function (data) {
+						$scope.showtext = '立即检查';
+						$scope.submitDisabled = false;
+						if (data.message.errno == 1) {
+							util.message(data.message.message, '', 'success');
+							return true;
+						}
+						if (data.message.errno == 0) {
+							$scope.upgrade = data.message.message;
+						} else {
+							util.message(data.message.message);
+						}
+					});
+		};
+		$scope.checkUpgrade();
+		$scope.submit = function() {
+			if(confirm('**注意** 更新过程中不要关闭此浏览器窗口.')) {
+				location.href = config.links.process;
+			}
+			return true;
+		};
+	}]);
+	angular.bootstrap($('#js-cloud-upgrade'), ['cloudUpgradeApp']);
+</script>
+{template 'common/footer'}

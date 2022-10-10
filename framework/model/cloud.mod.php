@@ -236,10 +236,6 @@ function cloud_module_setting_save($acid, $module_name, $setting) {
 	return cloud_api('module/setting/save', $pars, array('nocache' => STATUS_ON));
 }
 
-function cloud_site_info() {
-	return cloud_api('site/info');
-}
-
 /**
  * 小程序配置信息
  */
@@ -248,85 +244,10 @@ function cloud_wxapp_info($moduleinfo) {
 }
 
 /**
- * 获取二维码
- */
-function cloud_wxapp_login_qrcode() {
-	return cloud_api('wxapp/login/qr-code', array(), array('nocache' => true));
-}
-
-/**
- * 获取扫码结果
- */
-function cloud_wxapp_login_qrscan($uuid) {
-	return cloud_api('wxapp/login/qr-scan', $uuid);
-}
-
-/**
- * 发布小程序
- */
-function cloud_wxapp_publish($data) {
-	return cloud_api('wxapp/publish', $data);
-}
-
-/**
  * 下载小程序
  */
 function cloud_miniapp_get_package($data) {
 	return cloud_api('wxapp/publish/download', $data);
-}
-
-/**
- * 生成附件站点信息的云服务跳转地址
- * @param string $forward 回调地址
- * @param array $data 站点数据
- * @return string 跳转地址
- */
-function cloud_auth_url($forward, $data = array()) {
-	global $_W;
-	if (!empty($_W['setting']['site']['url']) && !strexists($_W['siteroot'], $_W['setting']['site']['url'])) {
-		$url = $_W['setting']['site']['url'];
-	} else {
-		$url = rtrim($_W['siteroot'], '/');
-	}
-	$auth = array();
-	$auth['key'] = '';
-	$auth['password'] = '';
-	$auth['url'] = $url;
-	$auth['referrer'] = intval($_W['config']['setting']['referrer']);
-	$auth['version'] = IMS_VERSION;
-	$auth['forward'] = $forward;
-	$auth['family'] = IMS_FAMILY;
-
-	if (!empty($_W['setting']['site']['key']) && !empty($_W['setting']['site']['token'])) {
-		$auth['key'] = $_W['setting']['site']['key'];
-		$auth['password'] = md5($_W['setting']['site']['key'] . $_W['setting']['site']['token']);
-	}
-	if ($data && is_array($data)) {
-		$auth = array_merge($auth, $data);
-	}
-	$query = base64_encode(json_encode($auth));
-	$auth_url = 'https://s.w7.cc/index.php?c=auth&a=passport&__auth=' . $query;
-	return $auth_url;
-}
-
-/**
- * module setting cloud
- * @param array $module
- * @param string $bindings
- * @return string iframe
- */
-function cloud_module_setting_prepare($module, $binding) {
-	global $_W;
-	$auth = _cloud_build_params();
-	$auth['arguments'] = array(
-		'binding' => $binding,
-		'acid' => $_W['uniacid'],
-		'type' => 'module',
-		'module' => $module,
-	);
-	$iframe_auth_url = cloud_auth_url('module', $auth);
-
-	return $iframe_auth_url;
 }
 
 function cloud_build_transtoken() {

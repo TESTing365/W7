@@ -86,37 +86,6 @@ $urls['host'] = !empty($urls['host']) ? $urls['host'] : '';
 $_W['siteroot'] = $urls['scheme'] . '://' . $urls['host'] . ((!empty($urls['port']) && '80' != $urls['port']) ? ':' . $urls['port'] : '') . $urls['path'];
 
 $_W['isajax'] = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 'xmlhttprequest' == strtolower($_SERVER['HTTP_X_REQUESTED_WITH']);
-
-$pdo_init_load_times = intval(igetcookie('init_load_times'));
-$pdo_if_start = (pdo()->getPDO() instanceof PDO);
-while ($pdo_init_load_times <= 10 && !$pdo_if_start && !empty(getenv('CBR_ENV_ID'))) {
-	isetcookie('init_load_times', ($pdo_init_load_times + 1));
-	if ($_W['isajax']) {
-		$vars = array();
-		$vars['message'] = array('errno' => -20, 'message' => '数据库启动中，请稍等。');
-		$vars['redirect'] = '';
-		$vars['type'] = 'ajax';
-		exit(json_encode($vars));
-	}
-	echo ierror_page('数据库启动中，请稍等片刻。。。', './index.php');
-	exit();
-}
-isetcookie('init_load_times', 0);
-if (!$pdo_if_start && file_exists(IA_ROOT . '/install.php')) {
-	header('Content-Type: text/html; charset=utf-8');
-	require IA_ROOT . '/framework/version.inc.php';
-	echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-	if (!empty(getenv('CBR_ENV_ID'))) {
-		header('Location:' . $_W['siteroot'] . 'install.php?step=oauth');
-		exit;
-	} else {
-		$message = "如果你还没安装本程序，请运行<a href='" . (false === strpos($_SERVER['SCRIPT_NAME'], 'web') ? './install.php' : '../install.php') . "'> install.php 进入安装&gt;&gt; </a><br/><br/>";
-		$message .= "&nbsp;&nbsp;<a href='http://www.w7.cc' style='font-size:12px' target='_blank'>Power by W7 " . IMS_VERSION . ' &nbsp;微擎公众平台自助开源引擎</a>';
-		echo ierror_page($message);
-	}
-	exit();
-}
-unset($configfile, $config, $pdo_if_start, $pdo_init_load_times);
 // 附件地址绝对路径
 define('ATTACHMENT_ROOT', IA_ROOT . '/attachment/');
 error_reporting(0);
@@ -181,7 +150,8 @@ setting_load();
 if (empty($_W['setting']['upload'])) {
 	$_W['setting']['upload'] = array_merge($_W['config']['upload']);
 }
-require IA_ROOT . '/framework/version.inc.php';
+define('IMS_FAMILY', 'c');
+define('IMS_VERSION', !empty($_W['setting']['local_version_info']['version']) ? $_W['setting']['local_version_info']['version'] : '1.0.0');
 $_W['os'] = Agent::deviceType();
 if (Agent::DEVICE_MOBILE == $_W['os']) {
 	$_W['os'] = 'mobile';
