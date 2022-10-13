@@ -3,26 +3,27 @@
 {if $do == 'list'}
 <div class="search-box we7-margin-bottom">
 	<select name="" id="" class="we7-margin-right">
-		<option data-url="{php echo filter_url('cateid:0');}" {if $_GPC['cateid'] == 0}selected{/if}>公告分类</option>
+		<option data-url="{php echo filter_url('cateid:0');}" {if isset($_GPC['cateid']) && $_GPC['cateid'] == 0}selected{/if}>公告分类</option>
+		{php $_GPC['cateid'] = empty($_GPC['cateid']) ? '' : $_GPC['cateid'];}
 		{loop $categorys $category}
 		<option data-url="{php echo filter_url('cateid:' . $category['id']);}" {if $_GPC['cateid'] == $category['id']}selected{/if}>{$category['title']}</option>
 		{/loop}
 	</select>
 	<select name="" id="" class="we7-margin-right">
-		<option data-url="{php echo filter_url('createtime:0');}" {if $_GPC['createtime'] == 0}selected{/if}>添加时间</option>
-		<option data-url="{php echo filter_url('createtime:3');}" {if $_GPC['createtime'] == 3}selected{/if}>三天内</option>
-		<option data-url="{php echo filter_url('createtime:7');}" {if $_GPC['createtime'] == 7}selected{/if}>一周内</option>
-		<option data-url="{php echo filter_url('createtime:30');}" {if $_GPC['createtime'] == 30}selected{/if}>一月内</option>
-		<option data-url="{php echo filter_url('createtime:90');}" {if $_GPC['createtime'] == 90}selected{/if}>三月内</option>
+		<option data-url="{php echo filter_url('createtime:0');}" {if isset($_GPC['createtime']) && $_GPC['createtime'] == 0}selected{/if}>添加时间</option>
+		<option data-url="{php echo filter_url('createtime:3');}" {if !empty($_GPC['createtime']) && $_GPC['createtime'] == 3}selected{/if}>三天内</option>
+		<option data-url="{php echo filter_url('createtime:7');}" {if !empty($_GPC['createtime']) && $_GPC['createtime'] == 7}selected{/if}>一周内</option>
+		<option data-url="{php echo filter_url('createtime:30');}" {if !empty($_GPC['createtime']) && $_GPC['createtime'] == 30}selected{/if}>一月内</option>
+		<option data-url="{php echo filter_url('createtime:90');}" {if !empty($_GPC['createtime']) && $_GPC['createtime'] == 90}selected{/if}>三月内</option>
 	</select>
 	<form action="" method="get" class="search-form" role="form">
 		<input type="hidden" name="c" value="article">
 		<input type="hidden" name="a" value="notice">
 		<input type="hidden" name="do" value="list">
-		<input type="hidden" name="cateid" value="{$_GPC['cateid']}">
-		<input type="hidden" name="createtime" value="{$_GPC['createtime']}">
+		<input type="hidden" name="cateid" value="{if !empty($_GPC['cateid'])}{$_GPC['cateid']}{/if}">
+		<input type="hidden" name="createtime" value="{if !empty($_GPC['createtime'])}{$_GPC['createtime']}{/if}">
 		<div class="input-group col-sm-4 pull-left">
-			<input class="form-control" name="title" placeholder="标题" id="" type="text" value="{$_GPC['title']}">
+			<input class="form-control" name="title" placeholder="标题" id="" type="text" value="{if !empty($_GPC['title'])}{$_GPC['title']}{/if}">
 			<div class="input-group-btn">
 				<button class="btn btn-default"><i class="fa fa-search"></i></button>
 			</div>

@@ -63,8 +63,8 @@
 					{$notice['title']}
 				</h2>
 				<div class="info">
-					<!-- <span>作者：{$notice['author']}</span>
-					<span>来源：{$notice['source']}</span> -->
+					<!-- <span>作者：{if !empty($notice['author'])}{$notice['author']}{/if}</span>
+					<span>来源：{if !empty($notice['source'])}{$notice['source']}{/if}</span> -->
 					<span>时间：{php echo date('Y-m-d H:i', $notice['createtime']);}</span>
 					<span>阅读：{$notice['click']}次</span>
 				</div>

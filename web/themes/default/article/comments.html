@@ -49,9 +49,10 @@
 	<div class="text-right we7-padding js-pager" ng-show="pager!=''"></div>
 </div>
 	<script>
+		{php $order = empty($order) ? '' : $order;}
         angular.module('articleApp').value('config', {
             do: "{$do}",
-            comment_status: "{$comment_status}",
+            comment_status: "{php echo empty($comment_status) ? '' : $comment_status}",
             like_comment_url: "{php echo url('article/notice-show/like_comment')}",
             get_comments_url: "{php echo url('article/notice-show/more_comments', array('id' => $id, 'order' => $order))}",
             reply_url: "{php echo url('article/notice/reply_comment', array('id' => $id))}",

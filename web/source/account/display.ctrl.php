@@ -421,7 +421,7 @@ if ('list_star' == $do) {
 				'uniacid' => $account_info['uniacid'],
 				'type' => $account_info['type'],
 				'type_name' => $account_info['type_name'],
-				'level' => $account_all_type_sign[$account_info['type_sign']]['level'][$account_info['level']],
+				'level' => empty($account_all_type_sign[$account_info['type_sign']]['level'][$account_info['level']]) ? '' : $account_all_type_sign[$account_info['type_sign']]['level'][$account_info['level']],
 				'logo' => $account_info['logo'],
 				'switchurl' => $account_info['switchurl'],
 				'manageurl' => $account_info['manageurl'],

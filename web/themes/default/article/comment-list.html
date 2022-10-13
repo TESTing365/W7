@@ -9,11 +9,11 @@
         <form action="" method="get" class="form-inline" role="form">
             <div class="form-group">
                 <label class="radio-inline">
-                    <input type="radio" name="inlineRadioOptions" value="1" {if $_GPC['order']=='id'}checked{/if}>
+                    <input type="radio" name="inlineRadioOptions" value="1" {if !empty($_GPC['order']) && $_GPC['order'] == 'id'}checked{/if}>
                     <a href="{php echo url('article/notice/comments', array('id'=>$id,'order' => 'id'))}">最新</a>
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="inlineRadioOptions" value="2" {if $_GPC['order']=='like_num'}checked{/if}>
+                    <input type="radio" name="inlineRadioOptions" value="2" {if !empty($_GPC['order']) && $_GPC['order'] == 'like_num'}checked{/if}>
                     <a href="{php echo url('article/notice/comments', array('id'=>$id,'order' => 'like_num'))}">最多赞</a>
                 </label>
             </div>
