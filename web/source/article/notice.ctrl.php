@@ -76,7 +76,7 @@ if ('category_del' == $do) {
 
 //编辑/添加公告
 if ('post' == $do) {
-	$id = intval($_GPC['id']);
+	$id = empty($_GPC['id']) ? 0 : intval($_GPC['id']);
 	$notice = table('article_notice')->searchWithId($id)->get();
 	if (empty($notice)) {
 		$notice = array(
@@ -163,13 +163,13 @@ if ('post' == $do) {
 
 //公告列表
 if ('list' == $do) {
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$psize = 20;
 
 	$article_table = table('article_notice');
-	$cateid = intval($_GPC['cateid']);
-	$createtime = intval($_GPC['createtime']);
-	$title = safe_gpc_string($_GPC['title']);
+	$cateid = empty($_GPC['cateid']) ? 0 : intval($_GPC['cateid']);
+	$createtime = empty($_GPC['createtime']) ? 0 : intval($_GPC['createtime']);
+	$title = empty($_GPC['title']) ? '' : safe_gpc_string($_GPC['title']);
 
 	if (!empty($cateid)) {
 		$article_table->searchWithCateid($cateid);

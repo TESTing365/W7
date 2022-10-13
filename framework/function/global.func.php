@@ -238,7 +238,7 @@ function checksubmit($var = 'submit', $allowget = false) {
 
 function complex_authkey() {
 	global $_W;
-	$key = (array) $_W['setting']['site'];
+	$key = empty($_W['setting']['site']) ? array() : (array) $_W['setting']['site'];
 	$key['authkey'] = $_W['config']['setting']['authkey'];
 
 	return implode('', $key);

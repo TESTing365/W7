@@ -134,12 +134,12 @@
 {elseif $do == 'post'}
 <div class="clearfix">
 	<form action="{php echo url('article/news/post');}" method="post" class="we7-form" role="form" id="form1">
-		<input type="hidden" name="id" value="{$new['id']}"/>
+		<input type="hidden" name="id" value="{if !empty($new['id'])}{$new['id']}{/if}"/>
 		
 		<div class="form-group">
 			<label class="col-sm-2 control-label">新闻标题</label>
 			<div class="form-controls col-sm-8">
-				<input type="text" class="form-control" name="title" value="{$new['title']}" placeholder="新闻标题"/>
+				<input type="text" class="form-control" name="title" value="{if !empty($new['title'])}{$new['title']}{/if}" placeholder="新闻标题"/>
 				<div class="help-block">请填写新闻标题</div>
 			</div>
 		</div>
@@ -149,6 +149,7 @@
 				<div class="form-group">
 					<select name="cateid" id="cateid" class="form-control">
 						<option value="">==请选择新闻分类==</option>
+						{php $new['cateid'] = empty($new['cateid']) ? '' : $new['cateid'];}
 						{loop $categorys $category}
 						<option value="{$category['id']}" {if $new['cateid'] == $category['id']}selected{/if}>{$category['title']}</option>
 						{/loop}
@@ -161,6 +162,7 @@
 		<div class="form-group">
 			<label class="col-sm-2 control-label">缩略图</label>
 			<div class="form-controls col-sm-8">
+				{php $new['thumb'] = empty($new['thumb']) ? '' : $new['thumb'];}
 				{php echo tpl_form_field_image('thumb', $new['thumb'], '', array('dest_dir' => 'articles'));}
 			</div>
 		</div>
@@ -173,32 +175,33 @@
 		<div class="form-group">
 			<label class="col-sm-2 control-label">内容</label>
 			<div class="form-controls col-sm-8">
+				{php $new['content'] = empty($new['content']) ? '' : $new['content'];}
 				{php echo tpl_ueditor('content', $new['content']);}
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">新闻来源</label>
 			<div class="form-controls col-sm-8">
-				<input type="text" class="form-control" name="source" value="{$new['source']}" placeholder="新闻来源"/>
+				<input type="text" class="form-control" name="source" value="{if !empty($new['source'])}{$new['source']}{/if}" placeholder="新闻来源"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">新闻作者</label>
 			<div class="form-controls col-sm-8">
-				<input type="text" class="form-control" name="author" value="{$new['author']}" placeholder="新闻作者"/>
+				<input type="text" class="form-control" name="author" value="{if !empty($new['author'])}{$new['author']}{/if}" placeholder="新闻作者"/>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">阅读次数</label>
 			<div class="form-controls col-sm-8">
-				<input type="text" class="form-control" name="click" value="{$new['click']}" placeholder="阅读次数"/>
+				<input type="text" class="form-control" name="click" value="{if !empty($new['click'])}{$new['click']}{/if}" placeholder="阅读次数"/>
 				<div class="help-block">默认为0。您可以设置一个初始值,阅读次数会在该初始值上增加。</div>
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-2 control-label">排序</label>
 			<div class="form-controls col-sm-8">
-				<input type="number" class="form-control" name="displayorder" value="{$new['displayorder']}" placeholder="排序" max="255"/>
+				<input type="number" class="form-control" name="displayorder" value="{if !empty($new['displayorder'])}{$new['displayorder']}{/if}" placeholder="排序" max="255"/>
 				<div class="help-block">数字越大，越靠前，最大255。</div>
 			</div>
 		</div>

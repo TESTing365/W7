@@ -425,13 +425,13 @@ function tpl_form_field_image($name, $value = '', $default = '', $options = arra
 
 	$s .= '
 		<div class="input-group ' . $options['class_extra'] . '">
-			<input type="text" name="' . $name . '" value="' . $value . '"' . ($options['extras']['text'] ? $options['extras']['text'] : '') . ' class="form-control" autocomplete="off">
+			<input type="text" name="' . $name . '" value="' . $value . '"' . (!empty($options['extras']['text']) ? $options['extras']['text'] : '') . ' class="form-control" autocomplete="off">
 			<span class="input-group-btn">
 				<button class="btn btn-default" type="button" onclick="showImageDialog(this);">选择图片</button>
 			</span>
 		</div>
 		<div class="input-group ' . $options['class_extra'] . '" style="margin-top:.5em;">
-			<img src="' . $val . '" onerror="this.src=\'' . $default . '\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" ' . ($options['extras']['image'] ? $options['extras']['image'] : '') . ' width="150" />
+			<img src="' . $val . '" onerror="this.src=\'' . $default . '\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" ' . (!empty($options['extras']['image']) ? $options['extras']['image'] : '') . ' width="150" />
 			<em class="close" style="position:absolute; top: 0px; right: -14px;" title="删除这张图片" onclick="deleteImage(this)">×</em>
 		</div>';
 

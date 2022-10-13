@@ -117,19 +117,19 @@
 					</div>
 
 					<!-- 二级菜单-->
-					<div class="js-menu" id="js-menu-{FRAME}{$_W['account']['uniacid']}">
+					<div class="js-menu" id="js-menu-{FRAME}{php echo empty($_W['account']['uniacid']) ? '' : $_W['account']['uniacid']}">
 						{loop $frames['section'] $frame_section_id $frame_section}
 
 						{if !isset($frame_section['is_display']) || !empty($frame_section['is_display'])}
 						<div class="panel panel-menu">
 							{if $frame_section['title']}
 							<div class="panel-heading">
-								<span class="{if $_GPC['menu_fold_tag:'.$frame_section_id] == 1}collapsed{/if}" data-toggle="collapse" data-target="#frame-{$frame_section_id}" onclick="util.cookie.set('menu_fold_tag:{$frame_section_id}', util.cookie.get('menu_fold_tag:{$frame_section_id}') == 1 ? 0 : 1)">
+								<span class="{if !empty($_GPC['menu_fold_tag:'.$frame_section_id]) && $_GPC['menu_fold_tag:'.$frame_section_id] == 1}collapsed{/if}" data-toggle="collapse" data-target="#frame-{$frame_section_id}" onclick="util.cookie.set('menu_fold_tag:{$frame_section_id}', util.cookie.get('menu_fold_tag:{$frame_section_id}') == 1 ? 0 : 1)">
 									<span class="nav-title">{$frame_section['title']}<i class="wi wi-angle-down pull-right setting"></i></span>
 								</span>
 							</div>
 							{/if}
-							<ul class="list-group collapse {if $_GPC['menu_fold_tag:'.$frame_section_id] == 0}in{/if}" id="frame-{$frame_section_id}" >
+							<ul class="list-group collapse {if isset($_GPC['menu_fold_tag:'.$frame_section_id]) && $_GPC['menu_fold_tag:'.$frame_section_id] == 0}in{/if}" id="frame-{$frame_section_id}" >
 								{loop $frame_section['menu'] $menu_id $menu}
 								{if !empty($menu['is_display'])}
 								{if $menu_id == 'platform_module_plugin_more' || $menu_id == 'platform_module_more'}
@@ -140,14 +140,14 @@
 									</a>
 								</li>
 								{else}
-								{if $menu['active']}{php $active_sub_permission = $menu['sub_permission'];}{/if}
-								<li class="list-group-item list-group-item-plugin {if $menu['multilevel']}list-group-item-more{/if} {if $menu['active']}active{/if}">
+								{if !empty($menu['active'])}{php $active_sub_permission = $menu['sub_permission'];}{/if}
+								<li class="list-group-item list-group-item-plugin {if !empty($menu['multilevel'])}list-group-item-more{/if} {if !empty($menu['active'])}active{/if}">
 									{if $frame_section_id == 'platform_module_plugin' && !empty($_GPC['m']) && $_GPC['m'] != $menu['main_module']}
 									<a class="back" href="{php echo url('module/welcome', array('m' => $menu['main_module'], 'uniacid' => $_W['uniacid']))}" >
 										<i class="wi wi-angle-left"></i>
 									</a>
 									{/if}
-									<a href="{if $menu['multilevel']}javascript:;{else}{$menu['url']}{/if}" {if $menu['multilevel']}data-toggle="collapse" data-target="#frame-child-{$frame_section_id}-{$menu_id}"{/if} class="text-over" {if $frame_section_id == 'platform_module'}target="_blank"{/if}>
+									<a href="{if !empty($menu['multilevel'])}javascript:;{else}{$menu['url']}{/if}" {if !empty($menu['multilevel'])}data-toggle="collapse" data-target="#frame-child-{$frame_section_id}-{$menu_id}"{/if} class="text-over" {if $frame_section_id == 'platform_module'}target="_blank"{/if}>
 									<span class="nav-icon" >
 													{if $frame_section_id == 'platform_module' || $frame_section_id == 'platform_module_plugin'}
 													<img src="{$menu['icon']}"/>
@@ -155,9 +155,9 @@
 													<i class="{$menu['icon']}"></i>
 													{/if}
 												</span>
-									<span class="nav-title">{$menu['title']}{if $menu['multilevel']}<i class="wi wi-angle-down pull-right setting"></i>{/if}</span>
+									<span class="nav-title">{$menu['title']}{if !empty($menu['multilevel'])}<i class="wi wi-angle-down pull-right setting"></i>{/if}</span>
 									</a>
-									{if $menu['multilevel'] && !empty($menu['childs'])}
+									{if !empty($menu['multilevel']) && !empty($menu['childs'])}
 									<ul class="list-child collapse in" id="frame-child-{$frame_section_id}-{$menu_id}">
 										{loop $menu['childs'] $module_menu_child}
 										<li class="list-child-item {if $module_menu_child['active']}active{/if}">
