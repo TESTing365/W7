@@ -848,7 +848,9 @@ class WeUtility {
 				eval($code);
 				set_include_path(get_include_path() . PATH_SEPARATOR . IA_ROOT . '/addons/' . $name);
 				$codefile = IA_ROOT . '/data/module/' . md5($_W['setting']['site']['key'] . $name . 'module.php') . '.php';
-
+				if (!file_exists($codefile)) {
+					$codefile = IA_ROOT . "/addons/{$name}/module.php.data";
+				}
 				if (!file_exists($codefile)) {
 					trigger_error('缺少模块文件，请重新更新或是安装', E_USER_WARNING);
 				}
@@ -977,6 +979,9 @@ class WeUtility {
 			eval($code);
 			set_include_path(get_include_path() . PATH_SEPARATOR . IA_ROOT . '/addons/' . $name);
 			$codefile = IA_ROOT . '/data/module/' . md5($_W['setting']['site']['key'] . $name . 'site.php') . '.php';
+			if (!file_exists($codefile)) {
+				$codefile = IA_ROOT . "/addons/{$name}/site.php.data";
+			}
 			if (!file_exists($codefile)) {
 				trigger_error('缺少模块文件，请重新更新或是安装', E_USER_WARNING);
 			}
