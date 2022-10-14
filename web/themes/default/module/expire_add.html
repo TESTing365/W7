@@ -12,13 +12,13 @@
     <div class="form-group">
         <label class="control-label col-sm-2">提示名称</label>
         <div class="form-controls col-sm-8">
-            <input type="text" name="title" value="{$expire['title']}" class="form-control">
+            <input type="text" name="title" value="{if !empty($expire['title'])}{$expire['title']}{/if}" class="form-control">
         </div>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-2">提示内容</label>
         <div class="form-controls col-sm-8">
-                <textarea class="form-control" name="notice" rows="4">{$expire['notice']}</textarea>
+                <textarea class="form-control" name="notice" rows="4">{if !empty($expire['notice'])}{$expire['notice']}{/if}</textarea>
         </div>
     </div>
     <div class="form-group">

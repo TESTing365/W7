@@ -200,7 +200,7 @@
 								<a href="{$menu['url']}">
 									{$menu['title']}
 									<!-- start应用管理中未安装应用数量 -->
-									{if FRAME == 'module_manage' && $menu_id == 'module_manage_not_installed'}<span class="color-red"> ({$module_uninstall_total}) </span>{/if}
+									{if FRAME == 'module_manage' && $menu_id == 'module_manage_not_installed'}<span class="color-red"> {if !empty($module_uninstall_total)}({$module_uninstall_total}){/if} </span>{/if}
 									<!-- end应用管理中未安装应用数量 -->
 								</a>
 							</li>

@@ -533,7 +533,7 @@
 					</div>
 
 				</div>
-				{if $recent_versions['total'] > 10}
+				{if !empty($recent_versions['total']) && $recent_versions['total'] > 10}
 				<div class="text-center">
 					<a href="javascript:;" class="btn c-blue js-versions-more">加载更多<i class="fa fa-angle-down"></i></a>
 				</div>
@@ -680,7 +680,7 @@
 	require(['fileUploader'], function() {
 		angular.module('moduleApp').value('config', {
 			'isFounder' : "{if $_W['isfounder']}1{else}2{/if}",
-			'show' : "{$_GPC['show']}",
+			'show' : "{php echo empty($_GPC['show']) ? '' : $_GPC['show']}",
 			'moduleInfo' : {php echo json_encode($module_info)},
 			'localUpgradeInfo' : {php echo json_encode($local_upgrade_info)},
 			'receiveBanUrl' : "{php echo url('module/manage-system/change_receive_ban')}",

@@ -500,7 +500,7 @@ if ('save_module_info' == $do) {
 	}
 	$manifest = ext_module_manifest($module_name);
 	$module_update = array();
-	$title = safe_gpc_string($_GPC['moduleinfo']['title']);
+	$title = empty($_GPC['moduleinfo']['title']) ? '' : safe_gpc_string($_GPC['moduleinfo']['title']);
 	if (!empty($title)) {
 		if (strlen($title) > 100) {
 			iajax(-1, '标题不可超过100个字符!');
@@ -508,15 +508,15 @@ if ('save_module_info' == $do) {
 		$module_update['title'] = $title;
 		$module_update['title_initial'] = get_first_pinyin($title);
 	}
-	$ability = safe_gpc_string($_GPC['moduleinfo']['ability']);
+	$ability = empty($_GPC['moduleinfo']['ability']) ? '' : safe_gpc_string($_GPC['moduleinfo']['ability']);
 	if (!empty($ability)) {
 		$module_update['ability'] = $ability;
 	}
-	$description = safe_gpc_string($_GPC['moduleinfo']['description']);
+	$description = empty($_GPC['moduleinfo']['description']) ? '' : safe_gpc_string($_GPC['moduleinfo']['description']);
 	if (!empty($description)) {
 		$module_update['description'] = $description;
 	}
-	$logo = safe_gpc_url($_GPC['moduleinfo']['logo'], false);
+	$logo = empty($_GPC['moduleinfo']['logo']) ? '' : safe_gpc_url($_GPC['moduleinfo']['logo'], false);
 	if (!empty($logo)) {
 		$module_update['logo'] = $logo;
 	}
@@ -550,16 +550,18 @@ if ('module_detail' == $do) {
 
 	$manifest = ext_module_manifest($module_name);
 	$local_upgrade_info = array();
-	if (version_compare($manifest['application']['version'], $module_info['version'], '>')) {
-		$local_upgrade_info = array(
-			'name' => $module_name,
-			'upgrade' => true,
-			'site_branch' => array(),
-			'branches' => array(),
-			'new_branch' => false,
-			'from' => 'local',
-			'best_version' => $manifest['application']['version'],
-		);
+	if (!empty($manifest)) {
+		if (version_compare($manifest['application']['version'], $module_info['version'], '>')) {
+			$local_upgrade_info = array(
+				'name' => $module_name,
+				'upgrade' => true,
+				'site_branch' => array(),
+				'branches' => array(),
+				'new_branch' => false,
+				'from' => 'local',
+				'best_version' => $manifest['application']['version'],
+			);
+		}
 	}
 
 	//计算此模块除了当前支持，还支持哪些
@@ -626,7 +628,8 @@ if ('uninstall' == $do) {
 		itoast('应用不存在或是已经卸载！');
 	}
 
-	if (!isset($_GPC['confirm'])) {
+	$confirm = empty($_GPC['confirm']) ? STATUS_OFF : STATUS_ON;
+	if (!isset($confirm)) {
 		$message = '';
 		if ($module['isrulefields']) {
 			$message .= '是否删除相关规则和统计分析数据<div><a class="btn btn-primary" style="width:80px;" href="' . url('module/manage-system/uninstall', array('module_name' => $name, 'confirm' => 1, 'support' => $module_support_name)) . '">是</a> &nbsp;&nbsp;<a class="btn btn-default" style="width:80px;" href="' . url('module/manage-system/uninstall', array('support' => $module_support_name, 'module_name' => $name, 'confirm' => 0)) . '">否</a></div>';
@@ -635,7 +638,7 @@ if ('uninstall' == $do) {
 			message($message, '', 'tips');
 		}
 	}
-	ext_module_clean($name, intval($_GPC['confirm']));
+	ext_module_clean($name, $confirm);
 	if ('cloud_test' != $module['from']) {
 		ext_execute_uninstall_script($name);
 	}
@@ -646,10 +649,6 @@ if ('uninstall' == $do) {
 	foreach ($uni_gruops as &$uni_gruop) {
 		$modules = iunserializer($uni_gruop['modules']);
 		foreach ($modules as $type_sign => &$module) {
-			$type_sign = $type_sign == 'modules' ? 'account_support' : $type_sign . '_support';
-			if ($type_sign != $module_support_name) {
-				continue;
-			}
 			foreach ($module as $key => $value) {
 				if ($name == $value) {
 					unset($module[$key]);
@@ -664,16 +663,12 @@ if ('uninstall' == $do) {
 	unset($uni_gruop);
 
 	$uni_account_extra_module_table = table('uni_account_extra_modules');
-	$uni_account_extra_modules = $uni_account_extra_module_table->where(array('modules LIKE' => "%$module_name%"))->getall();
+	$uni_account_extra_modules = $uni_account_extra_module_table->where(array('modules LIKE' => "%$name%"))->getall();
 	foreach ($uni_account_extra_modules as &$uni_account_extra_module) {
 		$modules = iunserializer($uni_account_extra_module['modules']);
 		foreach ($modules as $type_sign => &$module) {
-			$type_sign = $type_sign == 'modules' ? 'account_support' : $type_sign . '_support';
-			if (!in_array($type_sign, $module_support_name_arr)) {
-				continue;
-			}
 			foreach ($module as $key => $value) {
-				if ($module_name == $value) {
+				if ($name == $value) {
 					unset($module[$key]);
 					break;
 				}

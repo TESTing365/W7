@@ -68,7 +68,11 @@ if ('update_expire' == $do) {
 		if (is_error($result)) {
 			empty($_W['isajax']) ? itoast('设置失败', referer(), 'error') : iajax(-1, '设置失败');
 		}
-		empty($_W['isajax']) ? itoast('设置成功', $url, 'error') : iajax(0, '设置成功');
+		empty($_W['isajax']) ? itoast('设置成功', $url, 'success') : iajax(0, '设置成功');
+	}
+	$expire = $module_expire[$id];
+	if (empty($expire)) {
+		empty($_W['isajax']) ? itoast('系统错误，请刷新后再试', $url, 'error') : iajax(-1, '系统错误，请刷新后再试');
 	}
 	template('module/expire_add');
 }
