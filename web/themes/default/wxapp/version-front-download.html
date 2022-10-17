@@ -10,11 +10,6 @@
 </ul>
 {else}
 <ul class="we7-page-tab">
-	{if ACCOUNT_TYPE_APP_AUTH == $_W['account']['type']}
-	<li class="{if $do == 'platform_version_manage'}active{/if}">
-		<a href="{php echo url('wxapp/front-download/platform_version_manage', array('version_id' => $version_id));}">版本管理</a>
-	</li>
-	{/if}
 	<li class="{if $do == 'front_download'}active{/if}">
 		<a href="{php echo url('wxapp/front-download/front_download', array('version_id' => $version_id));}">小程序上传</a>
 	</li>
