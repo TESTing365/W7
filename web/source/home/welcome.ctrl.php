@@ -94,6 +94,8 @@ if ('get_module_statistics' == $do) {
 	);
 
 	//因权限问题，用户所分配的模块不同，所以此处直接count安装列表
+	$install_modules['wxapp'] = empty($install_modules['wxapp']) ? array() : $install_modules['wxapp'];
+	$install_modules['account'] = empty($install_modules['account']) ? array() : $install_modules['account'];
 	$module_statistics['account']['total']['all'] = $module_statistics['account']['total']['uninstall'] + count((array) $install_modules['account']);
 	$module_statistics['wxapp']['total']['all'] = $module_statistics['wxapp']['total']['uninstall'] + count((array) $install_modules['wxapp']);
 
@@ -253,7 +255,7 @@ if ('get_upgrade_modules' == $do) {
 					$is_unset = false;
 				}
 			}
-			if ($is_unset || $module_upgrade_info[$key]['service_expire']) {
+			if ($is_unset || !empty($module_upgrade_info[$key]['service_expire'])) {
 				unset($upgrade_modules[$key]);
 			}
 		}

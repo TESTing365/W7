@@ -428,7 +428,7 @@ if ('save_permission' == $do) {
 		}
 		itoast($result['message']);
 	}
-	$permission_names = "'" . implode(array(PERMISSION_ACCOUNT, PERMISSION_WXAPP, PERMISSION_WEBAPP, PERMISSION_PHONEAPP, PERMISSION_ALIAPP, PERMISSION_BAIDUAPP, PERMISSION_TOUTIAOAPP, PERMISSION_SYSTEM), "','") . "'";
+	$permission_names = "'" . implode("','", array(PERMISSION_ACCOUNT, PERMISSION_WXAPP, PERMISSION_WEBAPP, PERMISSION_PHONEAPP, PERMISSION_ALIAPP, PERMISSION_BAIDUAPP, PERMISSION_TOUTIAOAPP, PERMISSION_SYSTEM)) . "'";
 	pdo_query('DELETE FROM ' . tablename('users_permission') . ' WHERE uniacid = :uniacid AND uid = :uid AND type not in (' . $permission_names . ')', array(':uniacid' => $uniacid, ':uid' => $uid));
 	if (!empty($_GPC['module'])) {
 		$module_names = array();

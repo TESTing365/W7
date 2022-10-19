@@ -573,6 +573,8 @@ function permission_user_account_num($uid = 0) {
 			$create_groups[] = $create_group_info;
 			foreach ($account_all_type_sign as $sign) {
 				$maxsign = 'max' . $sign;
+				$create_group_info_all[$maxsign] = empty($create_group_info_all[$maxsign]) ? 0 : $create_group_info_all[$maxsign];
+				$create_group_info[$maxsign] = empty($create_group_info[$maxsign]) ? 0 : $create_group_info[$maxsign];
 				$create_group_info_all[$maxsign] += $create_group_info[$maxsign];
 			}
 		}

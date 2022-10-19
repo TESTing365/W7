@@ -10,7 +10,7 @@
 		<div class="input-group ">
 			<input type="hidden" name="c" value="user">
 			<input type="hidden" name="a" value="create-group">
-			<input type="text" name="group_name" value="{$_GPC['group_name']}" class="form-control" placeholder="输入名称搜索"/>
+			<input type="text" name="group_name" value="{if !empty($_GPC['group_name'])}{$_GPC['group_name']}{/if}" class="form-control" placeholder="输入名称搜索"/>
 			<span class="input-group-btn"><button class="btn btn-default"><i class="fa fa-search"></i></button></span>
 		</div>
 	</form>

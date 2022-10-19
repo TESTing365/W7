@@ -5,6 +5,7 @@
 		<div class="search-box we7-margin-bottom" >
 			<select name="" class="we7-margin-right">
 				<option data-url="{php echo filter_url('account_type:');}" >帐号类型筛选</option>
+				{php $_GPC['account_type'] = empty($_GPC['account_type']) ? '' : $_GPC['account_type'];}
 				{loop $account_all_type_sign $type_sign $type_sign_info}
 					{if $type_sign_info['account_num'] && $type_sign_info['account_num'] > 0}
 					<option data-url="{php echo filter_url('account_type:' . $type_sign);}" {if $_GPC['account_type'] == $type_sign} selected{/if}>{$type_sign_info['title']}</option>
@@ -13,20 +14,20 @@
 			</select>
 			<select name="" id="" class="we7-margin-right">
 				<option data-url="{php echo filter_url('order:desc');}">创建时间倒序</option>
-				<option data-url="{php echo filter_url('order:asc');}" {if $_GPC['order'] == 'asc'} selected{/if}>创建时间正序</option>
-				<option data-url="{php echo filter_url('order:endtime_asc');}" {if $_GPC['order'] == 'endtime_asc'} selected{/if}>到期时间正序</option>
-				<option data-url="{php echo filter_url('order:endtime_desc');}" {if $_GPC['order'] == 'endtime_desc'} selected{/if}>到期时间倒序</option>
+				<option data-url="{php echo filter_url('order:asc');}" {if !empty($_GPC['order']) && $_GPC['order'] == 'asc'} selected{/if}>创建时间正序</option>
+				<option data-url="{php echo filter_url('order:endtime_asc');}" {if !empty($_GPC['order']) && $_GPC['order'] == 'endtime_asc'} selected{/if}>到期时间正序</option>
+				<option data-url="{php echo filter_url('order:endtime_desc');}" {if !empty($_GPC['order']) && $_GPC['order'] == 'endtime_desc'} selected{/if}>到期时间倒序</option>
 			</select>
 			<select name="" id="" class="we7-margin-right">
-				<option data-url="{php echo filter_url('type:all');}" {if $_GPC['type'] == 'all'} selected{/if}>到期筛选</option>
-				<option data-url="{php echo filter_url('type:expire');}" {if $_GPC['type'] == 'expire'} selected{/if}>已到期</option>
-				<option data-url="{php echo filter_url('type:unexpire');}" {if $_GPC['type'] == 'unexpire'} selected{/if}>未到期</option>
+				<option data-url="{php echo filter_url('type:all');}" {if !empty($_GPC['type']) && $_GPC['type'] == 'all'} selected{/if}>到期筛选</option>
+				<option data-url="{php echo filter_url('type:expire');}" {if !empty($_GPC['type']) && $_GPC['type'] == 'expire'} selected{/if}>已到期</option>
+				<option data-url="{php echo filter_url('type:unexpire');}" {if !empty($_GPC['type']) && $_GPC['type'] == 'unexpire'} selected{/if}>未到期</option>
 			</select>
 			<form action="" class="search-form " method="get">
 				<input type="hidden" name="c" value="account">
 				<input type="hidden" name="a" value="manage">
 				<div class="input-group" style="width: 400px;">
-					<input type="text" name="keyword" value="{$_GPC['keyword']}" class="form-control" placeholder="搜索关键字"/>
+					<input type="text" name="keyword" value="{if !empty($_GPC['keyword'])}{$_GPC['keyword']}{/if}" class="form-control" placeholder="搜索关键字"/>
 					<span class="input-group-btn"><button class="btn btn-default"><i class="wi wi-search"></i></button></span>
 				</div>
 			</form>
@@ -145,10 +146,10 @@
 	});
 	angular.module('accountApp').value('config', {
 		searchParams: {
-			account_type: "{$_GPC['account_type']}",
-					order: "{$_GPC['order']}",
-					type: "{$_GPC['type']}",
-					keyword: "{$_GPC['keyword']}"
+			account_type: "{php echo empty($_GPC['account_type']) ? '' : $_GPC['account_type']}",
+					order: "{php echo empty($_GPC['order']) ? '' : $_GPC['order']}",
+					type: "{php echo empty($_GPC['type']) ? '' : $_GPC['type']}",
+					keyword: "{php echo empty($_GPC['keyword']) ? '' : $_GPC['keyword']}"
 		},
 		links: {
 			switch: "{php echo url('account/display/switch')}",

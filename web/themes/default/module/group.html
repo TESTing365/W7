@@ -8,7 +8,7 @@
 				<input type="hidden" name="a" value="group">
 				<input type="hidden" name="do" value="display">
 				<div class="input-group">
-					<input class="form-control" name="name" value="{$_GPC['name']}" type="text" placeholder="名称" >
+					<input class="form-control" name="name" value="{if !empty($_GPC['name'])}{$_GPC['name']}{/if}" type="text" placeholder="名称" >
 					<span class="input-group-btn"><button class="btn btn-default"><i class="fa fa-search"></i></button></span>
 				</div>
 			</form>
@@ -160,7 +160,7 @@
 <script>
 	angular.module('moduleApp').value('config', {
 		group_id: '{$group_id}',
-		module_name: '{$group["name"]}',
+		module_name: "{php echo empty($group['name']) ? '' : $group['name']}",
 		save_module_group_url: "{php echo url('module/group/save')}",
 		module_list: {php echo json_encode($module_list)},
 	});

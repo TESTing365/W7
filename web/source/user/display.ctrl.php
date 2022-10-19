@@ -16,7 +16,7 @@ if ('display' == $do) {
 	message_notice_read($message_id);
 
 	$user_groups = user_group();
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$psize = 20;
 	$users_table = table('users');
 	$expire = empty($_GPC['expire']) ? 0 : intval($_GPC['expire']);

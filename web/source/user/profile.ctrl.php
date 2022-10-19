@@ -36,10 +36,16 @@ if ('post' == $do) {
 
 	$users_profile_exist = table('users_profile')->getByUid($uid);
 	if ('birth' == $type) {
+		$users_profile_exist['year'] = empty($users_profile_exist['year']) ? '' : $users_profile_exist['year'];
+		$users_profile_exist['month'] = empty($users_profile_exist['month']) ? '' : $users_profile_exist['month'];
+		$users_profile_exist['day'] = empty($users_profile_exist['day']) ? '' : $users_profile_exist['day'];
 		if ($users_profile_exist['year'] == $_GPC['year'] && $users_profile_exist['month'] == $_GPC['month'] && $users_profile_exist['day'] == $_GPC['day']) {
 			iajax(0, '未作修改！', '');
 		}
 	} elseif ('reside' == $type) {
+		$users_profile_exist['province'] = empty($users_profile_exist['province']) ? '' : $users_profile_exist['province'];
+		$users_profile_exist['city'] = empty($users_profile_exist['city']) ? '' : $users_profile_exist['city'];
+		$users_profile_exist['district'] = empty($users_profile_exist['district']) ? '' : $users_profile_exist['district'];
 		if ($users_profile_exist['province'] == $_GPC['province'] && $users_profile_exist['city'] == $_GPC['city'] && $users_profile_exist['district'] == $_GPC['district']) {
 			iajax(0, '未作修改！', '');
 		}
@@ -49,6 +55,7 @@ if ('post' == $do) {
 				iajax(0, '未做修改！', '');
 			}
 		} else {
+			$users_profile_exist[$type] = empty($users_profile_exist[$type]) ? '' : $users_profile_exist[$type];
 			if ($users_profile_exist[$type] == $_GPC[$type] && empty($extra_filed_key)) {
 				iajax(0, '未作修改！', '');
 			}

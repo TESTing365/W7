@@ -309,7 +309,7 @@ function user_related_update($uid, $user) {
 	if (isset($user['groupid'])) {
 		$record['groupid'] = $user['groupid'];
 		$user_info = table('users')->getById($uid);
-		if ($user_info['founder_groupid'] == ACCOUNT_MANAGE_GROUP_VICE_FOUNDER || $user['founder_groupid'] == ACCOUNT_MANAGE_GROUP_VICE_FOUNDER) {
+		if ($user_info['founder_groupid'] == ACCOUNT_MANAGE_GROUP_VICE_FOUNDER || (!empty($user['founder_groupid']) && $user['founder_groupid'] == ACCOUNT_MANAGE_GROUP_VICE_FOUNDER)) {
 			$group_info = user_founder_group_detail_info($user['groupid']);
 		} else {
 			$group_info = user_group_detail_info($user['groupid']);
@@ -983,7 +983,7 @@ function user_group_format($lists) {
 		$group['package'] = array();
 		if (is_array($package)) {
 			foreach ($package as $packageid) {
-				$group['package'][$packageid] = $group_package[$packageid];
+				$group['package'][$packageid] = empty($group_package[$packageid]) ? array() : $group_package[$packageid];
 			}
 		}
 		if (empty($package)) {
@@ -1009,7 +1009,9 @@ function user_group_format($lists) {
 		);
 		if (!empty($group['package'])) {
 			foreach ($group['package'] as $package) {
-				$names[] = $package['name'];
+				if (!empty($package['name'])) {
+					$names[] = $package['name'];
+				}
 				$package['modules'] = !empty($package['modules']) && is_array($package['modules']) ? array_keys($package['modules']) : array();
 				$package['wxapp'] = !empty($package['wxapp']) && is_array($package['wxapp']) ? array_keys($package['wxapp']) : array();
 				$package['webapp'] = !empty($package['webapp']) && is_array($package['webapp']) ? array_keys($package['webapp']) : array();

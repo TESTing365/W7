@@ -11,13 +11,13 @@ $dos = array('display', 'post', 'del', 'save', 'info');
 $do = in_array($do, $dos) ? $do : 'display';
 
 if ('display' == $do) {
-	$pageindex = max(1, intval($_GPC['page']));
+	$pageindex = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$pagesize = 10;
 
 	$users_group_table = table('users_group');
 	$condition = '';
 	$params = array();
-	$name = safe_gpc_string($_GPC['name']);
+	$name = empty($_GPC['name']) ? '' : safe_gpc_string($_GPC['name']);
 	if (!empty($name)) {
 		$users_group_table->searchWithNameLike($name);
 	}

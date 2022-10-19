@@ -401,7 +401,7 @@ if ('edit_user_extra_group' == $do) {
 		$extra_group_table->searchWithUidCreateGroupId($uid, $group_ids)->delete();
 	} elseif ('extend_group' == $operate) {
 		//附加账号权限组
-		$group_ids = safe_gpc_array($_GPC['group_ids']);
+		$group_ids = empty($_GPC['group_ids']) ? array() : safe_gpc_array($_GPC['group_ids']);
 		$extra_group_table->where('uid', $uid)->where('uni_group_id', 0)->delete();
 		if (!empty($group_ids)) {
 			foreach ($group_ids as $group_id) {
@@ -470,7 +470,7 @@ if ('edit_uni_groups' == $do) {
 }
 //修改用户附加权限
 if ('edit_extra_modules' == $do) {
-	$extra_modules = safe_gpc_array($_GPC['extra_modules']);
+	$extra_modules = empty($_GPC['extra_modules']) ? array() : safe_gpc_array($_GPC['extra_modules']);
 	if (!empty($extra_modules)) {
 		$modules_name = array_column($extra_modules, 'name');
 		$extra_modules_name = pdo_getall('users_extra_modules', array('uid' => $uid, 'module_name IN ' => $modules_name), array('module_name'));

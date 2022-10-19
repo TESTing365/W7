@@ -18,13 +18,13 @@ if (!$_W['isfounder']) {
 }
 
 if ('display' == $do) {
-	$pageindex = max(1, intval($_GPC['page']));
+	$pageindex = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$pagesize = 10;
 
 	$uni_group_table = table('uni_group');
 	$uni_group_table->searchWithUid();
 
-	$name = safe_gpc_string($_GPC['name']);
+	$name = empty($_GPC['name']) ? '' : safe_gpc_string($_GPC['name']);
 	if (!empty($name)) {
 		$uni_group_table->searchWithName($name);
 	}

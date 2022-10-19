@@ -13,7 +13,7 @@ if (!in_array($_W['highest_role'], array(ACCOUNT_MANAGE_NAME_OWNER, ACCOUNT_MANA
 }
 
 if ('display' == $do) {
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$page_size = 20;
 	$account_table = table('account');
 

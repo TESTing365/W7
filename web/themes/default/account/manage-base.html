@@ -50,7 +50,7 @@
 			<td class="text-right"><div class="link-group"><a href="javascript:;" data-toggle="modal" data-target="#original" ng-click="editInfo('original', account.original)">修改</a></div></td>
 		</tr>
 		{/if}
-		{php $account_typesign = $account_param->typeSign}
+		{php $account_typesign = is_error($account_param) ? '' : $account_param->typeSign}
 		{if $account->typeSign == ACCOUNT_TYPE_SIGN}
 		<tr>
 			<td class="table-label">类型</td>

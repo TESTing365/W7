@@ -50,7 +50,7 @@ if ('base' == $do) {
 		} else {
 			iajax(-1, '参数错误！', '');
 		}
-		$request_data = safe_gpc_string($_GPC['request_data']);
+		$request_data = empty($_GPC['request_data']) ? '' : safe_gpc_string($_GPC['request_data']);
 		switch ($type) {
 			case 'qrcodeimgsrc':
 			case 'headimgsrc':
@@ -262,7 +262,7 @@ if ('edit_modules_tpl' == $do) {
 		iajax(-1, '无权限');
 	}
 	if ('group' == safe_gpc_string($_GPC['type'])) {
-		$groups = safe_gpc_array($_GPC['groupdata']);
+		$groups = empty($_GPC['groupdata']) ? array() : safe_gpc_array($_GPC['groupdata']);
 		if (!empty($groups)) {
 			$extra_group = pdo_getall('uni_account_group', array('uniacid' => $uniacid, 'groupid IN ' => $groups), array('groupid'));
 			$extra_group_ids = array_column($extra_group, 'groupid');
@@ -284,7 +284,7 @@ if ('edit_modules_tpl' == $do) {
 		pdo_delete('uni_account_group', array('uniacid' => $uniacid));
 		if (!empty($groups)) {
 			$group = pdo_get('users_group', array('id' => $owner['groupid']));
-			$group['package'] = (array) iunserializer($group['package']);
+			$group['package'] = empty($group['package']) ? array() : (array) iunserializer($group['package']);
 			$group['package'] = array_unique($group['package']);
 			foreach ($groups as $packageid) {
 				if (!empty($packageid) && !in_array($packageid, $group['package'])) {
@@ -302,7 +302,7 @@ if ('edit_modules_tpl' == $do) {
 
 	if ('extend' == $_GPC['type']) {
 		//如果有附加的权限，则生成专属套餐组
-		$module = safe_gpc_array($_GPC['module']);
+		$module = empty($_GPC['module']) ? array() : safe_gpc_array($_GPC['module']);
 		if (!empty($module)) {
 			$data = array(
 				'modules' => array('modules' => array(), 'wxapp' => array(), 'webapp' => array(), 'phoneapp' => array()),
@@ -392,7 +392,7 @@ if ('modules_tpl' == $do) {
 		} else {
 			$owner['group'] = pdo_get('users_group', array('id' => $owner['groupid']), array('id', 'name', 'package'));
 		}
-		$owner['group']['package'] = (array) iunserializer($owner['group']['package']);
+		$owner['group']['package'] = empty($owner['group']['package']) ? array() : (array) iunserializer($owner['group']['package']);
 
 		// 管理员用户组中的应用权限组
 		if (!empty($owner['group']['package'])) {

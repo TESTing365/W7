@@ -193,7 +193,7 @@
 							{loop $frames['section'][FRAME]['menu'] $menu_id $menu}
 							{if in_array(FRAME, array('account_manage', 'permission'))}
 							{if permission_check_account_user('see_' . $menu['permission_name'])}
-							<li class="{if $menu['active']}active{/if}"><a href="{$menu['url']}">{$menu['title']}</a></li>
+							<li class="{if !empty($menu['active'])}active{/if}"><a href="{$menu['url']}">{$menu['title']}</a></li>
 							{/if}
 							{else}
 							<li class="{if !empty($menu['active'])}active{/if}">

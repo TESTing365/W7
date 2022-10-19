@@ -15,7 +15,7 @@ if ('display' == $do) {
 	if (!$_W['isfounder']) {
 		itoast('', $_W['siteroot'] . 'web/home.php');
 	}
-	$message_id = intval($_GPC['message_id']);
+	$message_id = empty($_GPC['message_id']) ? 0 : intval($_GPC['message_id']);
 	message_notice_read($message_id);
 	foreach ($account_all_type_sign as $type_sign => $type_value) {
 		if ($_W['isadmin']) {
@@ -29,7 +29,7 @@ if ('display' == $do) {
 }
 
 if ('account_list' == $do) {
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : $_GPC['page'];
 	$page_size = empty($_GPC['page_size']) ? 20 : max(1, intval($_GPC['page_size']));
 	$order = !empty($_GPC['order']) ? safe_gpc_string($_GPC['order']) : 'desc';
 	$keyword = safe_gpc_string($_GPC['keyword']);
@@ -61,7 +61,7 @@ if ('account_list' == $do) {
 		$account['switchurl_full'] = $_W['siteroot'] . 'web/' . ltrim($account['switchurl'], './');
 		$account['owner_name'] = $account->owner['username'];
 		$account['support_version'] = $account->supportVersion;
-		$account['sms_num'] = !empty($account['setting']['notify']) ? $account['setting']['notify']['sms']['balance'] : 0;
+		$account['sms_num'] = !empty($account['setting']['notify']['sms']['balance']) ? $account['setting']['notify']['sms']['balance'] : 0;
 		$account['end'] = USER_ENDTIME_GROUP_EMPTY_TYPE == $account['endtime'] || USER_ENDTIME_GROUP_UNLIMIT_TYPE == $account['endtime'] ? '永久' : date('Y-m-d', $account['endtime']);
 		$account['manage_premission'] = in_array($account['current_user_role'], array(ACCOUNT_MANAGE_NAME_FOUNDER, ACCOUNT_MANAGE_NAME_VICE_FOUNDER, ACCOUNT_MANAGE_NAME_OWNER, ACCOUNT_MANAGE_NAME_MANAGER));
 		if ($account['support_version']) {

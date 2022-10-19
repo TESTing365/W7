@@ -974,15 +974,15 @@ function module_upgrade_info($modulelist = array()) {
 
 		$module_upgrade_data['logo'] = !empty($module['logo']) ? tomedia($module['logo']) : $manifest['application']['logo'];
 		$module_upgrade_data['version'] = $manifest['application']['version'];
-		$module_upgrade_data['title'] = $manifest['application']['title'];
-		$module_upgrade_data['title_initial'] = get_first_pinyin($manifest['application']['title']);
+		$module_upgrade_data['title'] = empty($manifest['application']['title']) ? '' : $manifest['application']['title'];
+		$module_upgrade_data['title_initial'] = empty($manifest['application']['title']) ? '' : get_first_pinyin($manifest['application']['title']);
 		$module_upgrade_data['status'] = STATUS_OFF;
-		pdo_update('modules', array('label' => $module_upgrade_data['label'], 'status' => STATUS_OFF), array('mid' => $module['mid']));
+		pdo_update('modules', array('status' => STATUS_OFF), array('mid' => $module['mid']));
 
 		$result[$modulename] = array(
 			'name' => $modulename,
 			'best_version' => $manifest['application']['version'],
-			'modified_time' => date('Y-m-d H:i:s', $manifest['site_branch']['modified_time'])
+			'modified_time' => empty($manifest['site_branch']['modified_time']) ? '' : date('Y-m-d H:i:s', $manifest['site_branch']['modified_time'])
 		);
 		$result[$modulename]['new_version'] = STATUS_OFF;
 		if (version_compare($module['version'], $manifest['application']['version']) == '-1') {
@@ -994,7 +994,7 @@ function module_upgrade_info($modulelist = array()) {
 			$result[$modulename]['system_shutdown'] = $manifest['system_shutdown'];
 			$result[$modulename]['system_shutdown_delay_time'] = date('Y-m-d', $manifest['system_shutdown_delay_time']);
 		}
-		$result[$modulename]['can_update'] = $manifest['can_update'] ? 1 : 0;
+		$result[$modulename]['can_update'] = !empty($manifest['can_update']) ? 1 : 0;
 		if (!empty($manifest['service_expiretime'])) {
 			$result[$modulename]['service_expiretime'] = date('Y-m-d H:i:s', $manifest['service_expiretime']);
 			if ($manifest['service_expiretime'] < time()) {
@@ -1003,7 +1003,7 @@ function module_upgrade_info($modulelist = array()) {
 		} else {
 			$result[$modulename]['service_expire'] = STATUS_OFF;
 		}
-		if (!$manifest['status'] || $manifest['system_shutdown'] == 2) {
+		if (empty($manifest['status']) || $manifest['system_shutdown'] == 2) {
 			$result[$modulename]['offsell'] = STATUS_ON;
 		} else {
 			$result[$modulename]['offsell'] = STATUS_OFF;

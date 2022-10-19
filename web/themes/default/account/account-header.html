@@ -2,7 +2,7 @@
 <ol class="breadcrumb we7-breadcrumb">
 	<a href="{php echo url('account/manage/display')}"><i class="wi wi-back-circle"></i> </a>
 	<li><a href="{php echo url('account/manage/display')}">平台管理</a></li>
-	<li>{ACCOUNT_TYPE_NAME}设置</li>
+	<li>{if defined('ACCOUNT_TYPE_NAME')}{ACCOUNT_TYPE_NAME}{/if}设置</li>
 </ol>
 {/if}
 <div class="we7-head-info">
@@ -13,10 +13,12 @@
 		</div>
 		<div class="type">
 			<i class="wi wi-{php echo $account['type_sign']}"></i>
-			{ACCOUNT_TYPE_NAME}
+			{if defined('ACCOUNT_TYPE_NAME')}{ACCOUNT_TYPE_NAME}{/if}
 		</div>
 	</div>
 	{if $_W['role'] == ACCOUNT_MANAGE_NAME_FOUNDER || $_W['role'] == ACCOUNT_MANAGE_NAME_OWNER || $_W['role'] == ACCOUNT_MANAGE_NAME_VICE_FOUNDER}
+		{if !defined('ACCOUNT_TYPE')}{php define('ACCOUNT_TYPE', '');}{/if}
+		{if !defined('ACCOUNT_TYPE_NAME')}{php define('ACCOUNT_TYPE_NAME', '');}{/if}
 		<a href="{php echo url('account/display/switch', array('uniacid' => $account['uniacid'], 'account_type' => ACCOUNT_TYPE))}" class="btn btn-primary" >进入{ACCOUNT_TYPE_NAME}</a>&nbsp;&nbsp;&nbsp;
 		<a class="btn btn-primary" onclick="stopAccount('{php echo url('account/manage/delete', array('uniacid' => $account['uniacid'], 'account_type' => ACCOUNT_TYPE))}')">停 用</a>
 		<script type="text/javascript" charset="utf-8">

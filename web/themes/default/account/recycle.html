@@ -2,6 +2,7 @@
 <div class="search-box we7-margin-bottom">
 	<select name="" class="we7-margin-right">
 		<option data-url="{php echo filter_url('account_type:');}" >帐号类型筛选</option>
+		{php $_GPC['account_type'] = empty($_GPC['account_type']) ? '' : $_GPC['account_type'];}
 		{loop $account_all_type_sign $type_sign $type_sign_info}
 		<option data-url="{php echo filter_url('account_type:' . $type_sign);}" {if $_GPC['account_type'] == $type_sign} selected{/if}>{$type_sign_info['title']}</option>
 		{/loop}
@@ -10,7 +11,7 @@
 		<input type="hidden" name="c" value="account">
 		<input type="hidden" name="a" value="recycle">
 		<div class="input-group">
-			<input type="text" name="keyword" value="{$_GPC['keyword']}" class="form-control" placeholder="搜索关键字"/>
+			<input type="text" name="keyword" value="{if !empty($_GPC['keyword'])}{$_GPC['keyword']}{/if}" class="form-control" placeholder="搜索关键字"/>
 			<span class="input-group-btn"><button class="btn btn-default"><i class="fa fa-search"></i></button></span>
 		</div>
 	</form>
