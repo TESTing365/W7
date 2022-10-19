@@ -217,6 +217,7 @@ if ('getpackage' == $do) {
 		$module_root = IA_ROOT . '/addons/' . $module['name'] . '/';
 		$dir_name = $module['name'] . '_wxapp';
 		if (is_dir($module_root . $dir_name)) {
+			$app_json = array();
 			$tomini_lists = iunserializer($version_info['tominiprogram']);
 			if (!empty($tomini_lists) && file_exists($module_root . $dir_name . '/app.json')) {
 				$app_json = json_decode(file_get_contents($module_root . $dir_name . '/app.json'), true);
@@ -251,18 +252,22 @@ module.exports = siteinfo;
 EOF;
 			$tmp_siteinfo_file = 'siteinfo/siteinfo_' . $_W['uniacid'] . '.js';
 			file_write($tmp_siteinfo_file, $siteinfo_content);
+			$tmp_app_json_file = '';
 			if (!empty($app_json)) {
 				$tmp_app_json_file = 'siteinfo/app_' . $_W['uniacid'] . '.json';
 				file_write($tmp_app_json_file, json_encode($app_json));
 			}
 			if ($zip->open(ATTACHMENT_ROOT . '/siteinfo/' . $uniacid_zip_name) === true) {
 				$zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file, $dir_name . '/siteinfo.js');
-				$zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_app_json_file, $dir_name . '/app.json');
-				$zip->close();
+				if (!empty($tmp_app_json_file)) {
+					$zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_app_json_file, $dir_name . '/app.json');
+				}$zip->close();
 				$result = array('url' => $_W['siteroot'] . 'attachment/siteinfo/' . $uniacid_zip_name);
 			}
 			@unlink(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file);
-			@unlink(ATTACHMENT_ROOT . '/' . $tmp_app_json_file);
+			if (!empty($tmp_app_json_file)) {
+				@unlink(ATTACHMENT_ROOT . '/' . $tmp_app_json_file);
+			}
 		} else {
 			$result = error(-1, '没有检测到小程序前端包的存在，请联系网站管理员处理！');
 		}
@@ -289,6 +294,6 @@ function addFileToZip($path, $zip, $root_path) {
 			}
 		}
 	}
-	@closedir($path);
+	@closedir($handler);
 	return true;
 }
