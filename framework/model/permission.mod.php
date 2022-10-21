@@ -110,13 +110,12 @@ function permission_account_user_role($uid = 0, $uniacid = 0) {
 	load()->model('user');
 	$role = '';
 	$uid = empty($uid) ? $_W['uid'] : intval($uid);
-
+	if (empty($uid)) {
+		return ACCOUNT_MANAGE_NAME_OWNER;
+	}
 	if (user_is_founder($uid, true)) {
 		return ACCOUNT_MANAGE_NAME_FOUNDER;
 	} else {
-//		if (!user_is_bind()) {
-//			return ACCOUNT_MANAGE_NAME_UNBIND_USER;
-//		}
 		$user_info = pdo_get('users', array('uid' => $uid));
 		if (!empty($user_info['endtime']) && $user_info['endtime'] != USER_ENDTIME_GROUP_EMPTY_TYPE && $user_info['endtime'] != USER_ENDTIME_GROUP_UNLIMIT_TYPE && $user_info['endtime'] < TIMESTAMP) {
 			return ACCOUNT_MANAGE_NAME_EXPIRED;
@@ -156,7 +155,7 @@ function permission_account_user_role($uid = 0, $uniacid = 0) {
 			$role = ACCOUNT_MANAGE_NAME_OPERATOR;
 		}
 	}
-	$role = empty($role) ? user_is_vice_founder($uid) ? ACCOUNT_MANAGE_NAME_VICE_FOUNDER : ACCOUNT_MANAGE_NAME_OWNER : $role;
+	$role = empty($role) ? ACCOUNT_MANAGE_NAME_OWNER : $role;
 	return $role;
 }
 

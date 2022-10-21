@@ -56,7 +56,7 @@ if ('list' == $do) {
 			}
 		}
 	}
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$psize = 21;
 	$current_module_list = array_slice($enable_modules, ($pindex - 1) * $psize, $psize);
 	if ($_W['isw7_request']) {
@@ -77,7 +77,7 @@ if ('list' == $do) {
 }
 
 if ('templates' == $do) {
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$page_size = 6;
 	$templates_table = table('modules');
 	if (!empty($keyword)) {
@@ -160,7 +160,7 @@ if ('modules' == $do) {
 			}
 		}
 	}
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$psize = 14;
 	$current_module_list = array_slice($module_list, ($pindex - 1) * $psize, $psize);
 
@@ -176,7 +176,7 @@ if ('modules' == $do) {
 }
 
 if ('bm' == $do) {
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$psize = 20;
 	$condition = array('issystem !=' => 1);
 	$total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('modules') . ' WHERE issystem != 1');

@@ -125,7 +125,7 @@ if ('display' == $do) {
 			}
 		}
 
-		$keys = trim(implode(',', array_map(function($item) {
+		$keys = trim(implode(',', array_map(function ($item) {
 			return safe_gpc_string($item, '', 'alpha_dash');
 		}, array_keys($available_fields))), ',');
 		$sql = 'SELECT ' . $keys . ' FROM ' . tablename('mc_members') . ' WHERE uniacid = :uniacid ' . $condition;

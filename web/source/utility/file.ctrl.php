@@ -525,7 +525,7 @@ $islocal = 'local' == safe_gpc_string($_GPC['local']);
 
 if ('keyword' == $do) {
 	$keyword = safe_gpc_string(addslashes($_GPC['keyword']));
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$psize = 24;
 	$condition = array('uniacid' => $uniacid, 'status' => 1);
 	if (!empty($keyword)) {
@@ -604,7 +604,7 @@ if ('module' == $do) {
 
 if ('video' == $do || 'voice' == $do) {
 	$server = $islocal ? MATERIAL_LOCAL : MATERIAL_WEXIN;
-	$page_index = max(1, intval($_GPC['page']));
+	$page_index = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$page_size = 10;
 	$keyword = safe_gpc_string($_GPC['keyword']);
 	$order = safe_gpc_string($_GPC['order']);
@@ -644,7 +644,7 @@ if ('news' == $do) {
 	$page_size = 24;
 	$type = safe_gpc_string($_GPC['type']);
 	$server = $islocal ? MATERIAL_LOCAL : MATERIAL_WEXIN;
-	$page_index = max(1, intval($_GPC['page']));
+	$page_index = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$search = addslashes($_GPC['keyword']);
 	$material_news_list = material_news_list($server, $search, array('page_index' => $page_index, 'page_size' => $page_size), $type);
 
@@ -795,12 +795,11 @@ if (!empty($_W['setting']['upload']['attachment_by_uid']) && !empty($uniacid) &&
 if ('image' == $do) {
 	$year = intval($_GPC['year']);
 	$month = intval($_GPC['month']);
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$groupid = safe_gpc_int($_GPC['group_id']);
 	$keyword = safe_gpc_string($_GPC['keyword']);
 	$order = safe_gpc_string($_GPC['order']);
 	$page_size = 15;
-	$page = max(1, $page);
 	if ($islocal) {
 		$attachment_table = table('core_attachment');
 		if (STATUS_ON == $attachment_by_uid) {

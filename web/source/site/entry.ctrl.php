@@ -7,7 +7,7 @@ defined('IN_IA') or exit('Access Denied');
 load()->model('module');
 load()->model('extension');
 
-$eid = intval($_GPC['eid']);
+$eid = !empty($_GPC['eid']) ? intval($_GPC['eid']) : 0;
 if (!empty($eid)) {
 	$entry = module_entry($eid);
 } else {
@@ -22,8 +22,8 @@ if (!empty($eid)) {
 		$entry = array(
 			'module' => $entry_module_name,
 			'do' => safe_gpc_string($_GPC['do']),
-			'state' => safe_gpc_string($_GPC['state']),
-			'direct' => safe_gpc_string($_GPC['direct']),
+			'state' => !empty($_GPC['state']) ? safe_gpc_string($_GPC['state']) : '',
+			'direct' => !empty($_GPC['direct']) ? safe_gpc_string($_GPC['direct']) : 0,
 		);
 	}
 }
@@ -42,7 +42,7 @@ if (($module[MODULE_SUPPORT_SYSTEMWELCOME_NAME] != MODULE_SUPPORT_SYSTEMWELCOME)
 if (!$entry['direct']) {
 	checklogin();
 	$referer = (url_params(referer()));
-	if (empty($_W['isajax']) && empty($_W['ispost']) && empty($_GPC['version_id']) && intval($referer['version_id']) > 0 &&
+	if (empty($_W['isajax']) && empty($_W['ispost']) && empty($_GPC['version_id']) && !empty($referer['version_id']) && intval($referer['version_id']) > 0 &&
 		('wxapp' == $referer['c'] ||
 		'site' == $referer['c'] && in_array($referer['a'], array('entry', 'nav')) ||
 		'home' == $referer['c'] && 'welcome' == $referer['a'] ||
@@ -52,7 +52,7 @@ if (!$entry['direct']) {
 	if (empty($_W['uniacid']) && 'system_welcome' != $entry['entry'] && 'system_welcome' != $_GPC['module_type']) {
 		itoast('', $_W['siteroot'] . 'web/home.php');
 	}
-	if ('system_welcome' != $entry['entry']) {
+	if (!empty($entry['entry']) && 'system_welcome' != $entry['entry']) {
 		if ('menu' == $entry['entry']) {
 			$permission = permission_check_account_user_module($entry['module'] . '_menu_' . $entry['do'], $entry['module']);
 		} elseif ('cover' == $entry['entry']) {
@@ -69,11 +69,11 @@ if (!$entry['direct']) {
 	// 兼容历史性问题：模块内获取不到模块信息$module的问题
 	define('CRUMBS_NAV', 1);
 
-	$_W['page']['title'] = $entry['title'];
-	define('ACTIVE_FRAME_URL', url('site/entry/', array('eid' => $entry['eid'], 'version_id' => intval($_GPC['version_id']))));
+	$_W['page']['title'] = !empty($entry['title']) ? $entry['title'] : '';
+	define('ACTIVE_FRAME_URL', url('site/entry/', array('eid' => !empty($entry['eid']) ? $entry['eid'] : 0, 'version_id' => !empty($_GPC['version_id']) ? intval($_GPC['version_id']) : 0)));
 }
 
-$_GPC['__entry'] = $entry['title'];
+$_GPC['__entry'] = !empty($entry['title']) ? $entry['title'] : '';
 $_GPC['__state'] = $entry['state'];
 $_GPC['state'] = $entry['state'];
 $_GPC['m'] = $entry['module'];
@@ -81,7 +81,7 @@ $_GPC['do'] = $entry['do'];
 
 $_W['current_module'] = $module;
 
-if ('system_welcome' == $entry['entry'] || 'system_welcome' == $_GPC['module_type']) {
+if ((!empty($entry['entry']) && 'system_welcome' == $entry['entry']) || (!empty($_GPC['module_type']) && 'system_welcome' == $_GPC['module_type'])) {
 	$_GPC['module_type'] = 'system_welcome';
 	define('SYSTEM_WELCOME_MODULE', true);
 	$site = WeUtility::createModuleSystemWelcome($entry['module']);
@@ -94,14 +94,7 @@ if (!is_error($site)) {
 	if (ACCOUNT_MANAGE_NAME_OWNER == $_W['role']) {
 		$_W['role'] = ACCOUNT_MANAGE_NAME_MANAGER;
 	}
-	$sysmodule = module_system();
-	if (in_array($m, $sysmodule)) {
-		$site_urls = $site->getTabUrls();
-	}
-	
-		$method = 'doWeb' . ucfirst($entry['do']);
-	
-	
+	$method = 'doWeb' . ucfirst($entry['do']);
 	exit($site->$method());
 }
 itoast("访问的方法 {$method} 不存在.", referer(), 'error');

@@ -557,7 +557,7 @@ if ('delete_user_group' == $do) {
 }
 //操作应用列表
 if ('operators' == $do) {
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$page_size = 15;
 	$module_permission = array();
 	$total = 0;

@@ -14,7 +14,7 @@ $_W['page']['title'] = '用户列表 - 用户管理';
 $founders = explode(',', $_W['config']['setting']['founder']);
 
 if ($do == 'display') {
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$psize = 20;
 
 	$users_table = table('users');

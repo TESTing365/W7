@@ -22,7 +22,7 @@
 				</div>
 				<div class="" ng-if="param.type == 'radio'">
 					<span ng-repeat="(key, value) in param.values ">
-						<input type="radio" id="{{'radio-' + paramKey + '-' + key }}" required="param.required" ng-value="key" ng-model="setting[param.name]">{{key}}-{{setting[param.name]}}
+						<input type="radio" id="{{'radio-' + paramKey + '-' + key }}" required="param.required" ng-value="key" ng-model="setting[param.name]">
 						<label class="radio-inline" for="{{'radio-' + paramKey + '-' + key }}">{{value}}</label>
 					</span>
 				</div>

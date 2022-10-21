@@ -134,7 +134,7 @@ if ('delete' == $do) {
 
 if ('sync' == $do) {
 	$account_api = WeAccount::createByUniacid();
-	$pageindex = max(1, intval($_GPC['pageindex']));
+	$pageindex = !empty($_GPC['pageindex']) ? intval($_GPC['pageindex']) : 1;
 	$type = empty($_GPC['type']) ? 'news' : safe_gpc_string($_GPC['type']);
 	$news_list = $account_api->batchGetMaterial($type, ($pageindex - 1) * 20);
 	$wechat_existid = empty($_GPC['wechat_existid']) ? array() : safe_gpc_array($_GPC['wechat_existid']);

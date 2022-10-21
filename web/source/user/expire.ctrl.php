@@ -24,7 +24,7 @@ if ('save_expire' == $do) {
 	$type = safe_gpc_string($_GPC['type']);
 
 	if ('day' == $type) {
-		$user_expire['day'] = max(1, intval($_GPC['day']));
+		$user_expire['day'] = empty($_GPC['day']) ? 1 : max(1, intval($_GPC['day']));
 		$url = url('user/expire');
 	} elseif ('notice' == $type) {
 		$user_expire['notice'] = !empty($_GPC['notice']) ? safe_gpc_string($_GPC['notice']) : '';

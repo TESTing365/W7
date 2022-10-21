@@ -604,7 +604,7 @@ function site_quickmenu() {
 			$site_multi_info = table('site_multi')->getById($id, $_W['uniacid']);
 			$multiid = empty($site_multi_info) ? '' : $id;
 		} else {
-			if (!($_GPC['c'] == 'home' && $_GPC['a'] == 'page')) {
+			if (!($_GPC['c'] == 'home' && !empty($_GPC['a']) && $_GPC['a'] == 'page')) {
 				@isetcookie('__multiid', '');
 			}
 		}

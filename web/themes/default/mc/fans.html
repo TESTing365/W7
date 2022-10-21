@@ -192,7 +192,7 @@
 						</td>
 						<td style="overflow-x: hidden;">
 							<a href="{php echo url('mc/chats', array('openid' => $fan['openid']))}" class="avatar">
-								<img src="{php echo tomedia($fan['headimgurl'])}" width="48" />
+								<img src="{php echo !empty($fan['headimgurl']) ? tomedia($fan['headimgurl']) : ''}" width="48" />
 							</a>
 						</td>
 						<td>

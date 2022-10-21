@@ -466,7 +466,7 @@ function buildframes($framename = '') {
 				'is_display' => 1,
 			);
 		}
-		if ($entries['profile'] && !empty($_W['account']) && in_array($_W['account']['type'], array(ACCOUNT_TYPE_OFFCIAL_NORMAL, ACCOUNT_TYPE_OFFCIAL_AUTH))) {
+		if (!empty($entries['profile']) && !empty($_W['account']) && in_array($_W['account']['type'], array(ACCOUNT_TYPE_OFFCIAL_NORMAL, ACCOUNT_TYPE_OFFCIAL_AUTH))) {
 			$frames['account']['section']['platform_module_common']['menu']['platform_module_profile'] = array(
 				'title' => '个人中心导航',
 				'icon' => 'wi wi-user',

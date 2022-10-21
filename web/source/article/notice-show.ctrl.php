@@ -59,7 +59,7 @@ if ('detail' == $do) {
 
 if ('more_comments' == $do) {
 	$order = empty($_GPC['order']) || 'id' == safe_gpc_string($_GPC['order']) ? 'id' : 'like_num';
-	$pageindex = max(1, intval($_GPC['page']));
+	$pageindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$pagesize = 15;
 	$comment_table = table('article_comment');
 	$comment_table->orderby($order, 'DESC');

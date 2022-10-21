@@ -49,7 +49,7 @@ if ('list' == $do) {
 		$founders = pdo_getall('users', array('founder_groupid' => 2), array('uid', 'username'), 'uid');
 		$founder_id = empty($_GPC['founder_id']) ? 0 : intval($_GPC['founder_id']);
 	}
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$psize = 'list' == $do ? 24 : 20;
 	$limit_num = empty($_GPC['limit_num']) ? 0 : intval($_GPC['limit_num']);
 	$psize = $limit_num > 0 ? $limit_num : $psize;

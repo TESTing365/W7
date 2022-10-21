@@ -179,7 +179,11 @@ if ('extend' == $do) {
 
 if ('display' == $do || 'change_status' == $do) {
 	$status_setting = setting_load('qr_status');
-	$status = $status_setting['qr_status']['status'];
+	if (!empty($status_setting) && !empty($status_setting['qr_status'])) {
+		$status = $status_setting['qr_status']['status'];
+	} else {
+		$status = '';
+	}
 }
 
 if ('display' == $do) {
@@ -187,7 +191,7 @@ if ('display' == $do) {
 	$pindex = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$psize = 30;
 	$qrcode_table = table('qrcode_stat');
-	$starttime = !empty($_GPC['time']['start']) ? strtotime($_GPC['time']['start']) :  '';
+	$starttime = !empty($_GPC['time']['start']) ? strtotime($_GPC['time']['start']) : '';
 	$endtime = !empty($_GPC['time']['end']) ? strtotime($_GPC['time']['end']) + 86399 : '';
 	if (!empty($starttime)) {
 		$qrcode_table->searchWithTime($starttime, $endtime);

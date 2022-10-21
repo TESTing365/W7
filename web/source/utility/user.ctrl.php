@@ -43,7 +43,7 @@ if ('browser' == $do) {
 			exit('暂无用户');
 		}
 	}
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$page_size = 10;
 	$total = 0;
 

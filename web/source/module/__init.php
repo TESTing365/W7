@@ -6,7 +6,7 @@ defined('IN_IA') or exit('Access Denied');
 
 if (in_array($action, array('permission', 'manage-account', 'welcome', 'link-account', 'shortcut', 'plugin'))) {
 	$referer = (url_params(referer()));
-	if (empty($_GPC['version_id']) && intval($referer['version_id']) > 0 && !$_W['isajax']) {
+	if (empty($_GPC['version_id']) && !empty($referer['version_id']) && intval($referer['version_id']) > 0 && !$_W['isajax']) {
 		itoast('', $_W['siteurl'] . '&version_id=' . $referer['version_id']);
 	}
 	$account_api = WeAccount::createByUniacid();

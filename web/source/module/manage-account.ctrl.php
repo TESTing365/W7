@@ -19,7 +19,7 @@ $do = in_array($do, $dos) ? $do : 'display';
 $modulelist = uni_modules();
 
 if ('display' == $do) {
-	$pageindex = max(1, intval($_GPC['page']));
+	$pageindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$pagesize = 30;
 
 	$modules = $displayorder = array();

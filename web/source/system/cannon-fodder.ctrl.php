@@ -10,7 +10,7 @@ $do = in_array($do, $dos) ? $do : 'display';
 if ('display' == $do) {
 	$psize = 24;
 	$keyword = empty($_GPC['keyword']) ? '' : safe_gpc_string($_GPC['keyword']);
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$where = array();
 	if (!empty($keyword)) {
 		$where['domain LIKE'] = "%{$keyword}%";
@@ -92,7 +92,7 @@ if ('delete' == $do) {
 if ('bind_list' == $do) {
 	$psize = 24;
 	$keyword = empty($_GPC['keyword']) ? '' : safe_gpc_string($_GPC['keyword']);
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$cannon_fodder_id = safe_gpc_int($_GPC['id']);
 	if (empty($cannon_fodder_id)) {
 		iajax(-1, '域名不存在！');

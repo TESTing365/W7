@@ -25,7 +25,7 @@ if ($do == 'modulelink') {
 if ($do == 'articlelist') {
 	$result = array();
 	$psize = 10;
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$condition = '';
 	if (!empty($_GPC['keyword'])) {
 		$condition .= " AND title LIKE :title";
@@ -49,7 +49,7 @@ if ($do == 'articlelist') {
 if ($do == 'pagelist') {
 	$result = array();
 	$psize = 10;
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$condition = '';
 	if (!empty($_GPC['keyword'])) {
 		$condition .= " AND title LIKE :title";
@@ -71,7 +71,7 @@ if ($do == 'pagelist') {
 if ($do == 'newslist') {
 	$result = array();
 	$psize = 10;
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$condition = '';
 	if (!empty($_GPC['keyword'])) {
 		$condition .= " AND n.title LIKE :title";
@@ -113,7 +113,7 @@ if ($do == 'catelist') {
 if ($do == 'page') {
 	$result = array();
 	$psize = 10;
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$result['list'] = pdo_fetchall("SELECT * FROM " . tablename('site_page') . " WHERE uniacid = :uniacid AND type = '1' ORDER BY id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':uniacid' => $_W['uniacid']), 'id');
 	if (!empty($result['list'])) {
 		foreach ($result['list'] as $k => &$v) {
@@ -127,7 +127,7 @@ if ($do == 'page') {
 if ($do == 'news') {
 	$result = array();
 	$psize = 10;
-	$pindex = max(1, safe_gpc_int($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$sql = "SELECT n.id, n.title FROM " . tablename('rule') . "AS r," . tablename('news_reply') . " AS n WHERE r.id = n.rid AND r.module = :news AND r.uniacid = :uniacid ORDER BY n.displayorder DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 	$result['list'] = pdo_fetchall($sql, array(':news' => 'news', ':uniacid' => $_W['uniacid']), 'id');
 	if (!empty($result['list'])) {
@@ -139,7 +139,7 @@ if ($do == 'news') {
 if ($do == 'article') {
 	$result = array();
 	$psize = 10;
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$result['list'] = pdo_fetchall("SELECT id, title, thumb, description, content, author, incontent, linkurl,  createtime, uniacid FROM " . tablename('site_article') . " WHERE uniacid = :uniacid ORDER BY displayorder DESC, id  LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':uniacid' => $_W['uniacid']), 'id');
 	if (!empty($result['list'])) {
 		foreach ($result['list'] as $k => &$v) {

@@ -103,8 +103,8 @@ if ('get_account_api' == $do) {
 }
 
 if ('get_account_visit' == $do) {
-	$page = max(1, intval($_GPC['page']));
-	$size = max(10, intval($_GPC['size']));
+	$page = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
+	$size = empty($_GPC['size']) ? 10 : max(10, intval($_GPC['size']));
 	$type = safe_gpc_string($_GPC['type']);
 	$start_time = date('Ymd', strtotime($_GPC['start_time']));
 	$end_time = date('Ymd', strtotime($_GPC['end_time']) + 86400);

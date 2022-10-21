@@ -140,7 +140,7 @@
 									</a>
 								</li>
 								{else}
-								{if !empty($menu['active'])}{php $active_sub_permission = $menu['sub_permission'];}{/if}
+								{if !empty($menu['active'])}{php $active_sub_permission = !empty($menu['sub_permission']) ? $menu['sub_permission'] : array();}{/if}
 								<li class="list-group-item list-group-item-plugin {if !empty($menu['multilevel'])}list-group-item-more{/if} {if !empty($menu['active'])}active{/if}">
 									{if $frame_section_id == 'platform_module_plugin' && !empty($_GPC['m']) && $_GPC['m'] != $menu['main_module']}
 									<a class="back" href="{php echo url('module/welcome', array('m' => $menu['main_module'], 'uniacid' => $_W['uniacid']))}" >

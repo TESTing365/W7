@@ -27,8 +27,8 @@ if ('get_not_installed_modules' == $do) {
 	iajax(0, $not_installed_modules);
 }
 $module_name = !empty($_GPC['module_name']) ? safe_gpc_string($_GPC['module_name']) : (!empty($_GPC['m']) ? safe_gpc_string($_GPC['m']) : '');
-if ('ext' == $do && !$_GPC['system_welcome']) {
-	$version_id = intval($_GPC['version_id']);
+if ('ext' == $do && empty($_GPC['system_welcome'])) {
+	$version_id = !empty($_GPC['version_id']) ? intval($_GPC['version_id']) : 0;
 	if (!empty($version_id)) {
 		$version_info = miniapp_version($version_id);
 	}
@@ -103,13 +103,13 @@ if ('get_module_statistics' == $do) {
 }
 
 if ('ext' == $do) {
-	$uniacid = intval($_GPC['uniacid']);
+	$uniacid = !empty($_GPC['uniacid']) ? intval($_GPC['uniacid']) : 0;
 	if (!empty($module_name)) {
 		$_W['current_module'] = module_fetch($module_name);
 	}
 
 	define('IN_MODULE', $module_name);
-	if ($_GPC['system_welcome']) {
+	if (!empty($_GPC['system_welcome'])) {
 		define('SYSTEM_WELCOME_MODULE', true);
 		$frames = buildframes('system_welcome');
 	} else {

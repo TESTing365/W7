@@ -31,7 +31,7 @@ if ('display' == $do) {
 }
 //待删除（以及相关）
 if ('display' == $do) {
-	$pageindex = max(1, intval($_GPC['page']));
+	$pageindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$pagesize = 20;
 
 	$uni_modules_table = table('uni_modules');
@@ -201,7 +201,7 @@ if ('set_default_account' == $do) {
 }
 
 if ('init_uni_modules' == $do) {
-	$pageindex = max(1, intval($_GPC['pageindex']));
+	$pageindex = empty($_GPC['pageindex']) ? 1 : max(1, intval($_GPC['pageindex']));
 	$pagesize = 20;
 	$total = table('account')->count();
 	$total = ceil($total / $pagesize);
@@ -217,7 +217,7 @@ if ('init_uni_modules' == $do) {
 }
 //客户端所有应用
 if ('own' == $do) {
-	$pageindex = max(1, intval($_GPC['page']));
+	$pageindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$pagesize = 24;
 	$limit_num = empty($_GPC['limit_num']) ? 0 : intval($_GPC['limit_num']);
 	$pagesize = $limit_num > 0 ? $limit_num : $pagesize;
@@ -331,7 +331,7 @@ if ('own' == $do) {
 }
 //首页应用
 if ('system_welcome' == $do) {
-	$pageindex = max(1, intval($_GPC['page']));
+	$pageindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$pagesize = 24;
 	$result = array(
 		'total' => 0,

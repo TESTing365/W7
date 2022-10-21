@@ -17,7 +17,7 @@ if ('keyword' == $do) {
 		$condition = array('uniacid' => $_W['uniacid'], 'status' => 1, 'module' => $type);
 	}
 
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$psize = 24;
 
 	$rule_keyword = pdo_getslice('rule_keyword', $condition, array($pindex, $psize), $total, array(), 'id');

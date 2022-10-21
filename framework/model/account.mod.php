@@ -180,7 +180,7 @@ function uni_need_account_info() {
 	$module_type = empty($_GPC['module_type']) ? '' : safe_gpc_string($_GPC['module_type']);
 	if (defined('FRAME') && in_array(FRAME, array('account', 'wxapp')) && !$system_welcome && $module_type != 'system_welcome') {
 		if ('site' == $controller && 'entry' == $action) {
-			$eid = intval($_GPC['eid']);
+			$eid = !empty($_GPC['eid']) ? intval($_GPC['eid']) : 0;
 			if (!empty($eid)) {
 				$entry = module_entry($eid);
 			} else {
@@ -195,8 +195,8 @@ function uni_need_account_info() {
 					$entry = array(
 						'module' => $entry_module_name,
 						'do' => safe_gpc_string($_GPC['do']),
-						'state' => safe_gpc_string($_GPC['state']),
-						'direct' => safe_gpc_string($_GPC['direct']),
+						'state' => !empty($_GPC['state']) ? safe_gpc_string($_GPC['state']) : '',
+						'direct' => !empty($_GPC['direct']) ? safe_gpc_string($_GPC['direct']) : 0,
 					);
 				}
 			}

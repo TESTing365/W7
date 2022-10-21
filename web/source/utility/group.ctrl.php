@@ -35,7 +35,7 @@ if ('module_groups' == $do) {
 			}
 		}
 	}
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$page_size = !empty($_GPC['page_size']) ? safe_gpc_int($_GPC['page_size']) : 3;
 	$current_uni_groups = array_slice($uni_groups, ($page - 1) * $page_size, $page_size);
 
@@ -159,7 +159,7 @@ if ('get_users_create_group_detail_info' == $do) {
 }
 //账号权限组
 if ('account_groups' == $do) {
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$page_size = !empty($_GPC['page_size']) ? safe_gpc_int($_GPC['page_size']) : 3;
 	$account_groups_table = table('users_create_group');
 	if (!empty($keyword)) {

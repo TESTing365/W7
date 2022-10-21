@@ -26,7 +26,7 @@ if ($do == 'history') {
 			$where .= " AND module <> 'default'";
 			break;
 	}
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 	$psize = 30;
 	$list = pdo_fetchall("SELECT * FROM ".tablename('stat_msg_history')." WHERE uniacid = '{$_W['uniacid']}' $where ORDER BY createtime DESC LIMIT ".($pindex - 1) * $psize.','. $psize);
 	if (!empty($_GPC['export'])) {
@@ -184,7 +184,7 @@ if ($do == 'rule') {
 	$endtime = empty($_GPC['time']['end']) ? TIMESTAMP : strtotime($_GPC['time']['end']) + 86399;
 	$where .= " AND createtime >= '$starttime' AND createtime < '$endtime'";
 	if ($foo == 'hit') {
-		$pindex = max(1, intval($_GPC['page']));
+		$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 		$psize = 50;
 		$list = pdo_fetchall("SELECT * FROM ".tablename('stat_rule')." WHERE  uniacid = '{$_W['uniacid']}' $where ORDER BY hit DESC LIMIT ".($pindex - 1) * $psize.','. $psize, array(), 'rid');
 		$rids = array_keys($list);
@@ -209,7 +209,7 @@ if ($do == 'rule') {
 		$pager = pagination($total, $pindex, $psize);
 		template('platform/stat-rule_hit');
 	} elseif ($foo == 'miss') {
-		$pindex = max(1, intval($_GPC['page']));
+		$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 		$psize = 50;
 		$list = pdo_fetchall("SELECT name, id, module FROM ".tablename('rule')." WHERE uniacid = '{$_W['uniacid']}' AND id NOT IN (SELECT rid FROM ".tablename('stat_rule')." WHERE  uniacid = '{$_W['uniacid']}' $where) LIMIT ".($pindex - 1) * $psize.','. $psize, array(), 'id');
 		if (!empty($list)) {
@@ -245,7 +245,7 @@ if ($do == 'keyword') {
 	$where .= " AND createtime >= '$starttime' AND createtime < '$endtime'";
 	
 	if ($foo == 'hit') {
-		$pindex = max(1, intval($_GPC['page']));
+		$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 		$psize = 50;
 		$list = pdo_fetchall("SELECT * FROM ".tablename('stat_keyword')." WHERE  uniacid = '{$_W['uniacid']}' $where ORDER BY hit DESC LIMIT ".($pindex - 1) * $psize.','. $psize);
 		if (!empty($list)) {
@@ -280,7 +280,7 @@ if ($do == 'keyword') {
 		$pager = pagination($total, $pindex, $psize);
 		template('platform/stat-keyword_hit');
 	} elseif ($foo == 'miss') {
-		$pindex = max(1, intval($_GPC['page']));
+		$pindex = empty($_GPC['page']) ? 1 : max(1, intval($_GPC['page']));
 		$psize = 50;
 		$list = pdo_fetchall("SELECT content, id, module, rid FROM ".tablename('rule_keyword')." WHERE uniacid = '{$_W['uniacid']}' AND id NOT IN (SELECT kid FROM ".tablename('stat_keyword')." WHERE  uniacid = '{$_W['uniacid']}' $where) LIMIT ".($pindex - 1) * $psize.','. $psize);
 		if (!empty($list)) {

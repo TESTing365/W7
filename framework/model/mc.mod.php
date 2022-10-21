@@ -1779,7 +1779,7 @@ function mc_init_fans_info($openid, $force_init_member = false){
 			if (in_array($fans_field_key, array_keys($mc_fans_tag_fields))) {
 				$fans_tag_update_info[$fans_field_key] = $fans_field_info;
 			}
-			$fans_tag_update_info['tagid_list'] = iserializer($fans_tag_update_info['tagid_list']);
+			$fans_tag_update_info['tagid_list'] = !empty($fans_tag_update_info['tagid_list']) ? iserializer($fans_tag_update_info['tagid_list']) : '';
 		}
 
 		$fans_tag_exists = $mc_fans_tag_table->getByOpenid($fans_tag_update_info['openid']);

@@ -21,9 +21,9 @@ $share_tmp = table('cover_reply')
 	))
 	->select(array('title', 'description', 'thumb'))
 	->get();
-$_share['imgUrl'] = tomedia($share_tmp['thumb']);
-$_share['desc'] = $share_tmp['description'];
-$_share['title'] = $share_tmp['title'];
+$_share['imgUrl'] = !empty($share_tmp['thumb']) ? tomedia($share_tmp['thumb']) : '';
+$_share['desc'] = !empty($share_tmp['description']) ? $share_tmp['description'] : '';
+$_share['title'] = !empty($share_tmp['title']) ? $share_tmp['title'] : '';
 $category_list = table('site_category')
 	->where(array(
 		'uniacid' => $_W['uniacid'],

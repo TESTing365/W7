@@ -454,7 +454,7 @@
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 col-md-2 control-label">强制验证邮箱</label>
 					<div class="col-sm-9 col-xs-12">
-						<input id="radio-6" type="radio" name="passport[audit]" value="1" {if $register_setting['audit'] == 1} checked="checked"{/if}/>
+						<input id="radio-6" type="radio" name="passport[audit]" value="1" {if !empty( $register_setting['audit']) && $register_setting['audit'] == 1} checked="checked"{/if}/>
 						<label for="radio-6">是</label>
 						<input id="radio-7" type="radio" name="passport[audit]" value="0" {if empty($register_setting['audit'])} checked="checked"{/if}/>
 						<label for="radio-7">否</label>
@@ -464,11 +464,11 @@
 				<div class="form-group">
 					<label class="col-xs-12 col-sm-3 col-md-2 control-label">身份验证方式</label>
 					<div class="col-sm-9 col-xs-12">
-						<input id="radio-8" type="radio" name="passport[type]" value="code" {if $register_setting['type'] == 'code'} checked="checked"{/if}/>
+						<input id="radio-8" type="radio" name="passport[type]" value="code" {if !empty($register_setting['type']) && $register_setting['type'] == 'code'} checked="checked"{/if}/>
 						<label for="radio-8">随机密码</label>
-						<input id="radio-9" type="radio" name="passport[type]" value="password" {if $register_setting['type'] == 'password'} checked="checked"{/if}/>
+						<input id="radio-9" type="radio" name="passport[type]" value="password" {if !empty($register_setting['type']) && $register_setting['type'] == 'password'} checked="checked"{/if}/>
 						<label for="radio-9">固定密码</label>
-						<input id="radio-10" type="radio" name="passport[type]" value="hybird" {if $register_setting['type'] == 'hybird'} checked="checked"{/if}/>
+						<input id="radio-10" type="radio" name="passport[type]" value="hybird" {if !empty($register_setting['type']) && $register_setting['type'] == 'hybird'} checked="checked"{/if}/>
 						<label for="radio-10">混合密码</label>
 						<span class="help-block">使用邮箱+密码来登录系统</span>
 						<span class="help-block">随机密码方式: 采用发送验证码的方式, 用户不需要记录密码. 在微信以外的渠道登录系统时, 需要输入邮箱+验证码来进入系统</span>

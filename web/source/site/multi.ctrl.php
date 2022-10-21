@@ -104,7 +104,6 @@ if ($do == 'post') {
 		$multi['site_info'] = iunserializer($multi['site_info']) ? iunserializer($multi['site_info']) : array();
 	}
 
-
 	$temtypes = ext_template_type();
 	$temtypes[] = array('name' => 'all', 'title' => '全部');
 	$styles = table('site_styles')
@@ -137,7 +136,7 @@ if ($do == 'display') {
 		$li['style'] = table('site_styles')->getById($li['styleid'], $_W['uniacid']);
 		$li['template'] = table('modules')->getTemplateById($li['style']['templateid']);
 		$li['site_info'] = (array)iunserializer($li['site_info']);
-		$li['site_info']['thumb'] = tomedia($li['site_info']['thumb']);
+		$li['site_info']['thumb'] = !empty($li['site_info']['thumb']) ? tomedia($li['site_info']['thumb']) : '';
 		$li['preview_thumb'] = $li['template']['logo'];
 	}
 	unset($li);
@@ -219,16 +218,16 @@ if ($do == 'copy') {
 				unset($rule['id']);
 				table('rule')->fill($rule)->save();
 				$new_rid = pdo_insertid();
-				foreach($keywords as &$keyword) {
+				foreach ($keywords as &$keyword) {
 					unset($keyword['id']);
 					$keyword['rid'] = $new_rid;
 					table('rule_keyword')->fill($keyword)->save();
 				}
 				unset($keyword);
 				unset($cover['id']);
-				$cover['title'] =  $multi['title'] . '入口设置';
-				$cover['multiid'] =  $multi_id;
-				$cover['rid'] =  $new_rid;
+				$cover['title'] = $multi['title'] . '入口设置';
+				$cover['multiid'] = $multi_id;
+				$cover['rid'] = $new_rid;
 				table('cover_reply')->fill($cover)->save();
 			}
 		}
@@ -239,7 +238,7 @@ if ($do == 'copy') {
 if ($do == 'switch') {
 	$id = intval($_GPC['id']);
 	$multi_info = table('site_multi')->getById($id, $_W['uniacid']);
-	if(empty($multi_info)) {
+	if (empty($multi_info)) {
 		itoast('微站不存在或已删除', referer(), 'error');
 	}
 	$data = array('status' => $multi_info['status'] == 1 ? 0 : 1);
@@ -250,16 +249,16 @@ if ($do == 'switch') {
 		))
 		->fill($data)
 		->save();
-	if(!empty($result)) {
+	if (!empty($result)) {
 		iajax(0, '更新成功！', '');
-	}else {
+	} else {
 		iajax(-1, '请求失败！', '');
 	}
 }
 //底部快捷菜单:quickmenu_display、quickmenu_post
 if ($do == 'quickmenu_display' && $_W['isajax'] && $_W['ispost'] && $_W['role'] != 'operator') {
 	$multiid = intval($_GPC['multiid']);
-	if($multiid > 0){
+	if ($multiid > 0) {
 		$page = table('site_page')
 			->where(array(
 				'multiid' => $multiid,
