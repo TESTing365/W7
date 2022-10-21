@@ -36,7 +36,7 @@ if ('display' == $do) {
 
 if ('post' == $do) {
 	$user_type = 'user';
-	$id = intval($_GPC['id']);
+	$id = empty($_GPC['id']) ? 0 : intval($_GPC['id']);
 	if (!empty($id)) {
 		$group_info = pdo_get('users_group', array('id' => $id));
 		$group_info['package'] = iunserializer($group_info['package']);

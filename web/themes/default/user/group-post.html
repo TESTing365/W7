@@ -11,6 +11,7 @@
 		<li>添加用户权限组合</li>
 		{/if}
 	</ol>
+	{php $_GPC['id'] = empty($_GPC['id']) ? 0 : $_GPC['id'];}
 	<form method="post" action="{php echo $user_type == 'vice_founder' ? url('founder/group/save', array('id' => $_GPC['id'])) : url('user/group/save', array('id' => $_GPC['id']))}" name="UserCreateForm" class="we7-form user-group-edit" ng-cloak>
 		<div class="form-group">
 			<label for="" class="control-label col-sm-2">用户权限组名</label>
