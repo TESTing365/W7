@@ -51,7 +51,7 @@
 							{if $extension['status'] && $extension['clear']}
 							<a href="{$extension['clear']['url']}">{$extension['clear']['title']}</a>
 							{/if}
-							{$extension['extra']}
+							{if !empty($extension['extra'])}{$extension['extra']}{/if}
 						</td>
 					</tr>
 					{/loop}

@@ -67,7 +67,7 @@ if ('post' == $do) {
 		'url' => empty($_GPC['url']) ? '' : safe_gpc_url($_GPC['url']),
 		'permission_name' => empty($_GPC['permissionName']) ? '' : safe_gpc_string($_GPC['permissionName']),
 		'is_system' => empty($_GPC['isSystem']) ? '' : intval($_GPC['isSystem']),
-		'displayorder' => intval($_GPC['displayorder']),
+		'displayorder' => empty($_GPC['displayorder']) ? 0 : intval($_GPC['displayorder']),
 		'type' => 'url',
 		'icon' => empty($_GPC['icon']) ? '' : safe_gpc_string($_GPC['icon']),
 	);

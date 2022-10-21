@@ -70,7 +70,7 @@ if ($_W['ispost']) {
 }
 
 if ('display' == $do) {
-	$settings['mobile_status'] = $copyright['mobile_status'];
+	$settings['mobile_status'] = empty($copyright['mobile_status']) ? 0 : $copyright['mobile_status'];
 	$groups = user_group();
 	if (empty($groups)) {
 		$groups = array(array('id' => "0", 'name' => '请选择所属用户组'));

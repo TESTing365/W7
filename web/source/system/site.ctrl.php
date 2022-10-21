@@ -133,7 +133,7 @@ if ('save_setting' == $do) {
 
 if ($do == 'icps') {
 	$keyword = !empty($_GPC['keyword']) ? safe_gpc_string($_GPC['keyword']) : '';
-	$page = max(1, intval($_GPC['page']));
+	$page = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$page_size = 10;
 	$icps = (array)$settings['icps'];
 	if (!empty($icps)) {
@@ -161,11 +161,11 @@ if ($do == 'icps') {
 
 if ($do == 'edit_icp') {
 	$id = empty($_GPC['id']) ? 0 : safe_gpc_int($_GPC['id']);
-	$icp = safe_gpc_string($_GPC['icp']);
-	$domain = safe_gpc_string($_GPC['domain']);
-	$policeicp_location = safe_gpc_string($_GPC['policeicp_location']);
-	$policeicp_code = safe_gpc_string($_GPC['policeicp_code']);
-	$electronic_license = safe_gpc_html(htmlspecialchars_decode($_GPC['electronic_license'], ENT_QUOTES));
+	$icp = empty($_GPC['icp']) ? '' : safe_gpc_string($_GPC['icp']);
+	$domain = empty($_GPC['domain']) ? '' : safe_gpc_string($_GPC['domain']);
+	$policeicp_location = empty($_GPC['policeicp_location']) ? '' : safe_gpc_string($_GPC['policeicp_location']);
+	$policeicp_code = empty($_GPC['policeicp_code']) ? '' : safe_gpc_string($_GPC['policeicp_code']);
+	$electronic_license = empty($_GPC['electronic_license']) ? '' : safe_gpc_html(htmlspecialchars_decode($_GPC['electronic_license'], ENT_QUOTES));
 	if (empty($icp)) {
 		iajax(-1, '请至少填写一条icp信息！');
 	}

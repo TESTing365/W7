@@ -14,7 +14,7 @@ $do = !empty($_GPC['do']) && in_array($_GPC['do'], $dos) ? $_GPC['do'] : 'displa
 $ip_lists = setting_load('ip_white_list');
 $ip_lists = $ip_lists['ip_white_list'];
 if ('display' == $do) {
-	$keyword = safe_gpc_string($_GPC['keyword']);
+	$keyword = empty($_GPC['keyword']) ? '' : safe_gpc_string($_GPC['keyword']);
 	$lists = $ip_lists;
 	if (!empty($keyword)) {
 		$lists = array();

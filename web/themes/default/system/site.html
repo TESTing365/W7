@@ -191,6 +191,7 @@
 					<div class="form-file">
 						<div class="form-label" >登录页背景图</div>
 						<div class="form-value">
+							{php $settings['background_img'] = empty($settings['background_img']) ? '' : $settings['background_img'];}
 							<img src="{php echo to_global_media($settings['background_img'])}" alt="">
 							<span class="we7-margin-left">设置提示：1.建议尺寸：1920px*1080px，系统按比例裁切；2.背景上展示内容，内容尽量显示在图片中间确保能够正常显示，效果自行调整</span>
 							<!-- <div class="help-block">背景图片</div> -->
@@ -225,7 +226,7 @@
 					<input type="hidden" name="a" value="site">
 					<input type="hidden" name="do" value="icps">
 					<div class="input-group col-sm-4 pull-left">
-						<input class="form-control" name="keyword" placeholder="" id="" type="text" value="{$_GPC['keyword']}">
+						<input class="form-control" name="keyword" placeholder="" id="" type="text" value="{if !empty($_GPC['keyword'])}{$_GPC['keyword']}{/if}">
 						<div class="input-group-btn">
 							<button class="btn btn-default"><i class="fa fa-search"></i></button>
 						</div>
@@ -497,8 +498,8 @@
 				<div class="form-file">
 					<div class="form-label">地理位置</div>
 					<div class="form-value" >
-						经度: {$settings['baidumap']['lng']},
-						纬度: {$settings['baidumap']['lat']}
+						经度: {if !empty($settings['baidumap']['lng'])}{$settings['baidumap']['lng']}{/if},
+						纬度: {if !empty($settings['baidumap']['lat'])}{$settings['baidumap']['lat']}{/if}
 					</div>
 					<div class="form-edit">
 						<a ng-click="showCoordinate(this);" >修改</a>
@@ -535,11 +536,11 @@
 
 <script>
 	angular.module('systemApp').value('config', {
-		'settings' : {php echo json_encode($settings)},
-		'template' : {php echo json_encode($template)},
-		'template_ch_name' : {php echo json_encode($template_ch_name)},
-		'login_ch_name' : {php echo json_encode($login_ch_name)},
-		'icps': {php echo json_encode($icps)},
+		'settings' : {if !empty($settings)}{php echo json_encode($settings)}{else}{}{/if},
+		'template' : {if !empty($template)}{php echo json_encode($template)}{else}{}{/if},
+		'template_ch_name' : {if !empty($template_ch_name)}{php echo json_encode($template_ch_name)}{else}{}{/if},
+		'login_ch_name' : {if !empty($login_ch_name)}{php echo json_encode($login_ch_name)}{else}{}{/if},
+		'icps': {if !empty($icps)}{php echo json_encode($icps)}{else}{}{/if},
 		links: {
 			'saveSettingUrl' : "{php echo url('system/site/save_setting')}",
 			'editIcpUrl': "{php echo url('system/site/edit_icp')}",

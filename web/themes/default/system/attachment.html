@@ -206,7 +206,7 @@
 		<div class="form-group">
 			<label class="col-sm-2 control-label">FTP密码</label>
 			<div class="col-sm-9">
-				<input type="password" name="ftp[password]" class="form-control encrypt" value="{if !empty($remote['ftp']['password'])}{$remote['ftp']['password']}{/if}" />
+				<input type="password" name="ftp[password]" class="form-control encrypt" value="{if !empty($remote['ftp']['password']) && !is_error($remote['ftp']['password'])}{$remote['ftp']['password']}{/if}" />
 			</div>
 		</div>
 		<div class="form-group">
@@ -314,7 +314,7 @@
 		<div class="form-group">
 		 <label class="col-sm-2 control-label">自定义URL</label>
 			<div class="col-sm-9">
-				<input type="text" name="custom[url]" class="form-control" {if !empty($remote['alioss']) && !strexists($remote['alioss']['url'],'aliyuncs.com') && $remote['type'] == 2}value="{$remote['alioss']['url']}"{/if} placeholder="默认URL不需要填写（默认包含 aliyuncs.com 的URL不显示）"/>
+				<input type="text" name="custom[url]" class="form-control" {if !empty($remote['alioss']) && !empty($remote['alioss']['url']) && !strexists($remote['alioss']['url'],'aliyuncs.com') && $remote['type'] == 2}value="{$remote['alioss']['url']}"{/if} placeholder="默认URL不需要填写（默认包含 aliyuncs.com 的URL不显示）"/>
 					<span class="help-block">
 						阿里云oss支持用户自定义访问域名，如果自定义了URL则用自定义的URL，如果未自定义，则用系统生成出来的URL。注：自定义url开头加http://或https://结尾不加 ‘/’例：http://abc.com
 					</span>

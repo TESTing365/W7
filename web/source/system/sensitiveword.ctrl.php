@@ -14,7 +14,7 @@ $words_list = setting_load('sensitive_words');
 $words_list = !empty($words_list['sensitive_words']) ? $words_list['sensitive_words'] : array();
 
 if ('display' == $do) {
-	$keyword = safe_gpc_string($_GPC['keyword']);
+	$keyword = empty($_GPC['keyword']) ? '' : safe_gpc_string($_GPC['keyword']);
 	$lists = $words_list;
 	if (!empty($keyword)) {
 		$lists = array();

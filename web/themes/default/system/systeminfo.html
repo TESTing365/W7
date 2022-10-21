@@ -79,7 +79,7 @@
 		<tr>
 			<td class="text-left">官方交流群</td>
 			<td>
-				<a target="_blank" href="{$info['exchange_group']['link']}" style="color: #428bca;">{$info['exchange_group']['title']}</a>
+				<a target="_blank" href="{if !empty($info['exchange_group']['link'])}{$info['exchange_group']['link']}{/if}" style="color: #428bca;">{if !empty($info['exchange_group']['link'])}{$info['exchange_group']['title']}{/if}</a>
 			</td>
 		</tr>
 		<tr>

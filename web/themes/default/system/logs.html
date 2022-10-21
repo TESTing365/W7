@@ -16,6 +16,8 @@
 			<input type="hidden" name="do" value="{$do}">
 				<div class="form-group">
 					<div class="col-sm-8 we7-padding-none">
+						{php $_GPC['time']['start'] = empty($_GPC['time']['start']) ? '' : $_GPC['time']['start'];}
+						{php $_GPC['time']['end'] = empty($_GPC['time']['end']) ? '' : $_GPC['time']['end'];}
 						{php echo tpl_form_field_daterange('time', array('starttime'=>$_GPC['time']['start'],'endtime'=>$_GPC['time']['end']));}
 					</div>
 					{if !in_array($do, array('sms', 'attachment', 'login'))}
@@ -37,7 +39,7 @@
 				{if $do == 'attachment'}
 				<div class="form-group we7-margin-left">
 					<div class="input-group">
-						<input type="text" class="form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="请输入要搜索的平台名称">
+						<input type="text" class="form-control" name="keyword" value="{if !empty($_GPC['keyword'])}{$_GPC['keyword']}{/if}" placeholder="请输入要搜索的平台名称">
 						<div class="input-group-btn">
 							<button class="btn btn-default"><i class="fa fa-search"></i></button>
 						</div>
@@ -47,7 +49,7 @@
 				{if $do == 'login'}
 				<div class="form-group we7-margin-left">
 					<div class="input-group">
-						<input type="text" class="form-control" name="username" value="{$_GPC['username']}" placeholder="请输入用户名">
+						<input type="text" class="form-control" name="username" value="{if !empty($_GPC['username'])}{$_GPC['username']}{/if}" placeholder="请输入用户名">
 						<div class="input-group-btn">
 							<button class="btn btn-default"><i class="fa fa-search"></i></button>
 						</div>
@@ -78,7 +80,7 @@
 			</div>
 	</form>
 	<pre>
-		{if $contents}
+		{if !empty($contents)}
 		{$contents}
 		{else}
 		暂无

@@ -261,7 +261,8 @@ EOF;
 				$zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file, $dir_name . '/siteinfo.js');
 				if (!empty($tmp_app_json_file)) {
 					$zip->addFile(ATTACHMENT_ROOT . '/' . $tmp_app_json_file, $dir_name . '/app.json');
-				}$zip->close();
+				}
+				$zip->close();
 				$result = array('url' => $_W['siteroot'] . 'attachment/siteinfo/' . $uniacid_zip_name);
 			}
 			@unlink(ATTACHMENT_ROOT . '/' . $tmp_siteinfo_file);

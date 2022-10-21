@@ -52,7 +52,7 @@ if ('wechat' == $do) {
 
 //系统日志
 if ('system' == $do) {
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$psize = 10;
 	$where .= " WHERE `type` = '1'";
 	$timewhere = empty($timewhere) ? '' : ' AND ' . $timewhere;
@@ -77,7 +77,7 @@ if ('system' == $do) {
 
 //数据库日志
 if ('database' == $do) {
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$psize = 10;
 	$where .= " WHERE `type` = '2'";
 	$timewhere = empty($timewhere) ? '' : ' AND ' . $timewhere;
@@ -114,7 +114,7 @@ if ('attachment' == $do) {
 	if (!empty($_GPC['keyword'])) {
 		$where['c.name LIKE'] = '%' . safe_gpc_string($_GPC['keyword']) . '%';
 	}
-	$pindex = max(1, safe_gpc_int($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : safe_gpc_int($_GPC['page']);
 	$psize = 20;
 	$core_attachment_table = table('core_attachment');
 	$core_list = $core_attachment_table
@@ -159,15 +159,14 @@ if ('login' == $do) {
 	if (!empty($_GPC['username'])) {
 		$username = safe_gpc_string($_GPC['username']);
 		if (empty($timewhere)) {
-			$timewhere = ' u.`username` LIKE :username ';
+			$timewhere = ' WHERE u.`username` LIKE :username ';
 		} else {
 			$timewhere = $timewhere . ' AND u.`username` LIKE :username ';
 		}
 		$params[':username'] = "%{$username}%";
 	}
-	$pindex = max(1, intval($_GPC['page']));
+	$pindex = empty($_GPC['page']) ? 1 : intval($_GPC['page']);
 	$psize = 10;
-
 	$sql = 'SELECT l.ip,l.createtime,u.username FROM ' . tablename('users_login_logs') . ' as l LEFT JOIN ' . tablename('users') . ' as u ON l.uid = u.uid ' . $timewhere . $order . ' LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 	$list = pdo_fetchall($sql, $params);
 	$total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('users_login_logs') . ' as l LEFT JOIN ' . tablename('users') . ' as u ON l.uid = u.uid ' . $timewhere, $params);

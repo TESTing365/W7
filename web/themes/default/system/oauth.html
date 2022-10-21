@@ -83,8 +83,8 @@
 </div>
 <script type="text/javascript">
 	angular.module('systemApp').value('config', {
-		'oauthAccount' : "{$oauth['oauth']['account']}",
-		'oauthHost' : "{$oauth['oauth']['host']}",
+		'oauthAccount' : "{php echo empty($oauth['oauth']['account']) ? '' : $oauth['oauth']['account']}",
+		'oauthHost' : "{php echo empty($oauth['oauth']['host']) ? '' : $oauth['oauth']['host']}",
 		'oauthAccounts' : {php echo json_encode($oauth_accounts)},
 		'links': {
 			'oauth_link': "{php echo url('system/oauth/save_oauth')}",

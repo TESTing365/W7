@@ -17,7 +17,7 @@ $do = in_array($do, $dos) ? $do : 'backup';
 
 //备份
 if ('backup' == $do) {
-	if ($_GPC['status']) {
+	if (!empty($_GPC['status'])) {
 		if (empty($_W['setting']['copyright']['status'])) {
 			if ($_W['isw7_request']) {
 				iajax(-1, '为了保证备份数据完整请关闭站点后再进行此操作', url('system/site'));
