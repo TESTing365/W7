@@ -13,7 +13,7 @@ load()->model('cloud');
 load()->model('cache');
 load()->model('extension');
 
-$dos = array('display', 'setting', 'shortcut', 'enable', 'top');
+$dos = array('display', 'setting', 'setting_params', 'shortcut', 'enable', 'top');
 $do = in_array($do, $dos) ? $do : 'display';
 
 $modulelist = uni_modules();
@@ -107,9 +107,6 @@ if ('setting' == $do) {
 	define('CRUMBS_NAV', 1);
 	$config = empty($module['config']) ? array() : $module['config'];
 	if ((2 == $module['settings']) && !is_file(IA_ROOT . "/addons/{$module['name']}/developer.cer")) {
-		if (empty($_W['setting']['site']['key']) || empty($_W['setting']['site']['token'])) {
-			itoast('站点未注册，请先注册站点。', url('cloud/profile'), 'info');
-		}
 		template('module/manage-account-setting');
 		exit();
 	}
@@ -129,11 +126,8 @@ if ('setting_params' == $do) {
 	if (!permission_check_account_user_module($module_name . '_settings', $module_name)) {
 		iajax(-1, '您没有权限进行该操作');
 	}
-	if (empty($_W['setting']['site']['key']) || empty($_W['setting']['site']['token'])) {
-		iajax(-1, '站点未注册，请先注册站点。');
-	}
 
-	if (checksubmit('submit')) {
+	if (checksubmit()) {
 		$post = array(
 			'setting' => safe_gpc_array($_GPC['setting']),
 			'params' => safe_gpc_array($_GPC['params']),
@@ -145,16 +139,17 @@ if ('setting_params' == $do) {
 				}
 			}
 		}
-
-		$result = cloud_module_setting_save($_W['uniacid'], $module['name'], $post['setting']);
-		if (is_error($result)) {
-			iajax(-1, $result['message']);
+		$pars = array('module' => $module_name, 'uniacid' => $_W['uniacid']);
+		if (pdo_get('uni_account_modules', array('module' => $module_name, 'uniacid' => $_W['uniacid']), array('id'))) {
+			$result = pdo_update('uni_account_modules', array('settings' => iserializer($post['setting'])), $pars);
+		} else {
+			$result = pdo_insert('uni_account_modules', array('settings' => iserializer($post['setting']), 'module' => $module_name, 'uniacid' => $_W['uniacid'], 'enabled' => 1));
 		}
+		cache_build_module_info($module_name);
 		iajax(0, $result);
 	}
 
-	$setting = cloud_module_setting($_W['uniacid'], $module);
-
+	$setting = iunserializer($module['cloudsetting']);
 	if (is_error($setting)) {
 		iajax(-1, $setting['message']);
 	}

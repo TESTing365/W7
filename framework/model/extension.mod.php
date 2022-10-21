@@ -77,7 +77,8 @@ function ext_module_convert($manifest) {
 		'welcome_support' => $welcome_support,
 		'shortcut' => $manifest['bindings']['shortcut'],
 		'function' => $manifest['bindings']['function'],
-		'permissions' => $manifest['permissions'] ? $manifest['permissions'] : array(),
+		'permissions' => !empty($manifest['permissions']) ? $manifest['permissions'] : array(),
+		'cloudsetting' => !empty($manifest['cloudsetting']) ? $manifest['cloudsetting'] : '',
 		'issystem' => 0,
 		'application_type' => 1
 	);
@@ -231,6 +232,12 @@ function ext_module_manifest_parse($xml) {
 				$manifest['permissions'][] = $row;
 			}
 		}
+	}
+	//云参数设置
+	$cloud_setting = $root->getElementsByTagName('cloudsetting')->item(0)->textContent;
+	if (!empty($cloud_setting)) {
+		$cloud_setting = iunserializer($cloud_setting);
+		$manifest['cloudsetting'] = $cloud_setting['data'];
 	}
 	return $manifest;
 }

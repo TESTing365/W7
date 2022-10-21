@@ -269,7 +269,7 @@ EOF;
 				@unlink(ATTACHMENT_ROOT . '/' . $tmp_app_json_file);
 			}
 		} else {
-			$result = error(-1, '没有检测到小程序前端包的存在，请联系网站管理员处理！');
+			$result = error(-1, '没有检测到小程序前端包的存在，需创始人下载代码包上传至addons目录解压后再重试！');
 		}
 	} else {
 		$result = cloud_miniapp_get_package($request_cloud_data);

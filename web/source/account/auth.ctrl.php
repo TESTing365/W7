@@ -16,8 +16,7 @@ $do = in_array($do, $dos) ? $do : 'forward';
 $account_platform = new WeixinPlatform();
 
 if ('forward' == $do) {
-	$if_console = !empty($_GPC['if_console']) ? STATUS_ON : STATUS_OFF;
-	$redirect = $if_console ? ("http://console.w7.cc/console/{$_W['setting']['site']['key']}/we7/account/manage") : ($_W['siteroot'] . 'web/home.php');
+	$redirect = $_W['siteroot'] . 'web/home.php';
 	if (empty($_GPC['auth_code'])) {
 		itoast('授权登录失败，请重试', $redirect, 'error');
 	}
@@ -51,7 +50,7 @@ if ('forward' == $do) {
 	}
 	$account_found = $account_platform->fetchSameAccountByAppid($auth_appid);
 	if (!empty($account_found)) {
-		message('公众号已经在系统中接入，是否要更改为授权接入方式？ <div><a class="btn btn-primary" href="' . url('account/auth/confirm', array('if_console' => $if_console, 'level' => $level, 'auth_refresh_token' => $auth_refresh_token, 'auth_appid' => $auth_appid, 'uniacid' => $account_found['uniacid'])) . '">是</a> &nbsp;&nbsp;<a class="btn btn-default" href="index.php">否</a></div>', '', 'tips');
+		message('公众号已经在系统中接入，是否要更改为授权接入方式？ <div><a class="btn btn-primary" href="' . url('account/auth/confirm', array('level' => $level, 'auth_refresh_token' => $auth_refresh_token, 'auth_appid' => $auth_appid, 'uniacid' => $account_found['uniacid'])) . '">是</a> &nbsp;&nbsp;<a class="btn btn-default" href="index.php">否</a></div>', '', 'tips');
 	}
 	$account_insert = array(
 		'name' => $account_info['authorizer_info']['nick_name'],
@@ -149,8 +148,7 @@ if ('confirm' == $do) {
 	$auth_appid = safe_gpc_string($_GPC['auth_appid']);
 	$level = intval($_GPC['level']);
 	$uniacid = intval($_GPC['uniacid']);
-	$if_console = !empty($_GPC['if_console']) ? STATUS_ON : STATUS_OFF;
-	$redirect = $if_console ? ("http://console.w7.cc/console/{$_W['setting']['site']['key']}/we7/account/manage") : ($_W['siteroot'] . 'web/home.php');
+	$redirect = $_W['siteroot'] . 'web/home.php';
 	if ($_W['isfounder']) {
 		$user_accounts = table('account')->getAll();
 	} else {

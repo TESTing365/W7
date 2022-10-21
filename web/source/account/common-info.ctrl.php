@@ -30,7 +30,4 @@ $common_info = array(
 	'show_console' => '2.7.56' == IMS_VERSION || 1 == version_compare(IMS_VERSION, '2.7.56') ? STATUS_ON : STATUS_OFF, //控制台是否显示开启关闭云端
 	'show_guide' => STATUS_ON, //是否显示未绑定用户登录页绑定引导设置项
 );
-if ($_W['isw7_request']) {
-	$common_info['sitekey'] = $_W['setting']['site']['key'];
-}
 iajax(0, $common_info);

@@ -421,7 +421,7 @@ if ('install' == $do) {
 			}
 		}
 
-		if (!empty($manifest['application']['cloud_setting'])) {
+		if (!empty($manifest['application']['cloud_setting']) || !empty($manifest['cloudsetting'])) {
 			$module['settings'] = 2;
 		} else {
 			$module['settings'] = empty($manifest['application']['setting']) ? STATUS_OFF : STATUS_ON;
@@ -448,7 +448,7 @@ if ('install' == $do) {
 	if (pdo_insert('modules', $module)) {
 		if ($_GPC['flag'] && !empty($post_groups) && $module['name']) {
 			foreach ($post_groups as $groupid) {
-				foreach ($module_support_name_arr as $support_name) {
+				foreach ($manifest['platform']['supports'] as $support_name) {
 					module_add_to_uni_group($module, $groupid, $support_name);
 				}
 			}
@@ -457,14 +457,8 @@ if ('install' == $do) {
 		cache_build_module_info($module_name);
 		cache_build_uni_group();
 		cache_delete(cache_system_key('user_modules', array('uid' => $_W['uid'])));
-		if ($_W['isajax']) {
-			iajax(0, '模块安装成功！');
-		}
 		itoast('模块安装成功！', url('module/manage-system/installed'), 'success');
 	} else {
-		if ($_W['isajax']) {
-			iajax(-1, '模块安装失败, 请联系模块开发者！');
-		}
 		itoast('模块安装失败, 请联系模块开发者！');
 	}
 }

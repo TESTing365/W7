@@ -452,7 +452,7 @@ function module_fetch($name, $enabled = true) {
 			$setting = empty($setting) ? array('module' => $name) : $setting;
 			cache_write($setting_cachekey, $setting);
 		}
-		$module['config'] = empty($setting['settings']) ? '' : $setting['settings'];
+		$module['config'] = empty($setting['settings']) ? array() : $setting['settings'];
 		$module['enabled'] = $module['issystem'] || !isset($setting['enabled']) ? 1 : $setting['enabled'];
 		$module['displayorder'] = empty($setting['displayorder']) ? '' : $setting['displayorder'];
 		$module['shortcut'] = empty($setting['shortcut']) ? '' : $setting['shortcut'];

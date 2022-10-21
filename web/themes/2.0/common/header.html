@@ -122,14 +122,14 @@
 
 						{if !isset($frame_section['is_display']) || !empty($frame_section['is_display'])}
 						<div class="panel panel-menu">
-							{if $frame_section['title']}
+							{if !empty($frame_section['title'])}
 							<div class="panel-heading">
-								<span class="{if !empty($_GPC['menu_fold_tag:'.$frame_section_id]) && $_GPC['menu_fold_tag:'.$frame_section_id] == 1}collapsed{/if}" data-toggle="collapse" data-target="#frame-{$frame_section_id}" onclick="util.cookie.set('menu_fold_tag:{$frame_section_id}', util.cookie.get('menu_fold_tag:{$frame_section_id}') == 1 ? 0 : 1)">
+								<span class="{if !empty($_GPC['menu_fold_tag']) && $_GPC['menu_fold_tag'] !== $frame_section_id || empty($_GPC['menu_fold_tag']) && 'platform_module' !== $frame_section_id}collapsed{/if}" data-toggle="collapse" data-parent="#js-menu-{FRAME}{$_W['account']['uniacid']}" data-target="#frame-{$frame_section_id}" onclick="util.cookie.set('menu_fold_tag', util.cookie.get('menu_fold_tag') == '{$frame_section_id}' ? '' : '{$frame_section_id}')">
 									<span class="nav-title">{$frame_section['title']}<i class="wi wi-angle-down pull-right setting"></i></span>
 								</span>
 							</div>
 							{/if}
-							<ul class="list-group collapse {if isset($_GPC['menu_fold_tag:'.$frame_section_id]) && $_GPC['menu_fold_tag:'.$frame_section_id] == 0}in{/if}" id="frame-{$frame_section_id}" >
+							<ul class="list-group {if !empty($frame_section['title'])}collapse{/if} {if isset($_GPC['menu_fold_tag:'.$frame_section_id]) && $_GPC['menu_fold_tag:'.$frame_section_id] == 0}in{/if}" id="frame-{$frame_section_id}" >
 								{loop $frame_section['menu'] $menu_id $menu}
 								{if !empty($menu['is_display'])}
 								{if $menu_id == 'platform_module_plugin_more' || $menu_id == 'platform_module_more'}
