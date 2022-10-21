@@ -234,7 +234,7 @@ function ext_module_manifest_parse($xml) {
 		}
 	}
 	//云参数设置
-	$cloud_setting = $root->getElementsByTagName('cloudsetting')->item(0)->textContent;
+	$cloud_setting = empty($root->getElementsByTagName('cloudsetting')->length) ? '' : $root->getElementsByTagName('cloudsetting')->item(0)->textContent;
 	if (!empty($cloud_setting)) {
 		$cloud_setting = iunserializer($cloud_setting);
 		$manifest['cloudsetting'] = $cloud_setting['data'];

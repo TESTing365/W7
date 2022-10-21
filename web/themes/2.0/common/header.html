@@ -124,7 +124,7 @@
 						<div class="panel panel-menu">
 							{if !empty($frame_section['title'])}
 							<div class="panel-heading">
-								<span class="{if !empty($_GPC['menu_fold_tag']) && $_GPC['menu_fold_tag'] !== $frame_section_id || empty($_GPC['menu_fold_tag']) && 'platform_module' !== $frame_section_id}collapsed{/if}" data-toggle="collapse" data-parent="#js-menu-{FRAME}{$_W['account']['uniacid']}" data-target="#frame-{$frame_section_id}" onclick="util.cookie.set('menu_fold_tag', util.cookie.get('menu_fold_tag') == '{$frame_section_id}' ? '' : '{$frame_section_id}')">
+								<span class="{if !empty($_GPC['menu_fold_tag']) && $_GPC['menu_fold_tag'] !== $frame_section_id || empty($_GPC['menu_fold_tag']) && 'platform_module' !== $frame_section_id}collapsed{/if}" data-toggle="collapse" data-parent="#js-menu-{FRAME}{if !empty($_W['account']['uniacid'])}{$_W['account']['uniacid']}{/if}" data-target="#frame-{$frame_section_id}" onclick="util.cookie.set('menu_fold_tag', util.cookie.get('menu_fold_tag') == '{$frame_section_id}' ? '' : '{$frame_section_id}')">
 									<span class="nav-title">{$frame_section['title']}<i class="wi wi-angle-down pull-right setting"></i></span>
 								</span>
 							</div>
