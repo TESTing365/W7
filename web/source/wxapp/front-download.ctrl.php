@@ -220,8 +220,8 @@ if ('getpackage' == $do) {
 			$app_json = array();
 			$tomini_lists = iunserializer($version_info['tominiprogram']);
 			if (!empty($tomini_lists) && file_exists($module_root . $dir_name . '/app.json')) {
-				$app_json = json_decode(file_get_contents($module_root . $dir_name . '/app.json'), true);
-				$app_json['embeddedAppIdList'] = array_keys($version_info['tominiprogram']);
+				$app_json = json_decode(file_get_contents($module_root . $dir_name . '/app.json'));
+				$app_json->embeddedAppIdList = array_keys($version_info['tominiprogram']);
 			}
 			$uniacid_zip_name = $module['name'] . '_wxapp_' . $_W['uniacid'] . md5(time()) . '.zip';
 			$zip = new ZipArchive();
