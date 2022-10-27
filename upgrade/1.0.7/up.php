@@ -1,5 +1,5 @@
 <?php
-namespace W7\U102;
+namespace W7\U107;
 
 defined('IN_IA') or exit('Access Denied');
 class Up {
